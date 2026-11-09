@@ -12,6 +12,25 @@ const form = document.getElementById("registerForm");
 const msg = document.getElementById("message");
 const submitBtn = form.querySelector('button[type="submit"]');
 
+// --- PASSWORD TOGGLE LOGIC START ---
+document.querySelectorAll('.toggle-password').forEach(button => {
+  button.addEventListener('click', function (e) {
+    e.preventDefault(); // Prevents form submission
+    const targetId = this.getAttribute('data-target');
+    const input = document.getElementById(targetId);
+    
+    if (input.type === 'password') {
+      input.type = 'text';
+      this.textContent = '🙈'; // Eye closed emoji
+    } else {
+      input.type = 'password';
+      this.textContent = '👁️'; // Eye open emoji
+    }
+  });
+});
+// --- PASSWORD TOGGLE LOGIC END ---
+
+
 function strongPassword(password) {
   return (
     password.length >= 12 &&
