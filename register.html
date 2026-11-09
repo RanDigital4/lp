@@ -11,6 +11,38 @@
 
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="auth.css">
+
+  <!-- CSS for Password Eye Icon -->
+  <style>
+    .password-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    
+    .password-wrapper input {
+      width: 100%;
+      padding-right: 40px; /* Space for the eye icon */
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 12px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      color: #666;
+      font-size: 18px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .toggle-password:hover {
+      color: #000;
+    }
+  </style>
 </head>
 
 <body class="auth-body">
@@ -58,13 +90,18 @@
 
         <label for="password">
           Password
-          <input
-            id="password"
-            type="password"
-            autocomplete="new-password"
-            minlength="12"
-            required
-          >
+          <div class="password-wrapper">
+            <input
+              id="password"
+              type="password"
+              autocomplete="new-password"
+              minlength="12"
+              required
+            >
+            <button type="button" class="toggle-password" data-target="password" aria-label="Toggle password visibility">
+              👁️
+            </button>
+          </div>
           <small>
             Minimum 12 characters with uppercase,
             lowercase, number and symbol.
@@ -73,13 +110,18 @@
 
         <label for="confirmPassword">
           Confirm password
-          <input
-            id="confirmPassword"
-            type="password"
-            autocomplete="new-password"
-            minlength="12"
-            required
-          >
+          <div class="password-wrapper">
+            <input
+              id="confirmPassword"
+              type="password"
+              autocomplete="new-password"
+              minlength="12"
+              required
+            >
+            <button type="button" class="toggle-password" data-target="confirmPassword" aria-label="Toggle password visibility">
+              👁️
+            </button>
+          </div>
         </label>
 
         <button
