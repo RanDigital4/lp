@@ -1,0 +1,60 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "profiles": {
+      "$uid": {
+        ".read": "auth != null && (auth.uid === $uid || auth.token.email === 'REPLACE_WITH_ADMIN_EMAIL')",
+        ".write": "auth != null && auth.uid === $uid && !data.exists()",
+        ".validate": "newData.hasChildren(['fullName','email'])"
+      }
+    },
+    "submissions": {
+      ".read": "auth != null && auth.token.email === 'REPLACE_WITH_ADMIN_EMAIL'",
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        "$submissionId": {
+          ".write": "auth != null && ((auth.uid === $uid && !data.exists() && newData.child('status').val() === 'pending') || auth.token.email === 'REPLACE_WITH_ADMIN_EMAIL')",
+          ".validate": "newData.hasChildren(['dex','amountUsd','lpUrl','txHash','walletAddress','status','createdAt']) && newData.child('amountUsd').isNumber() && newData.child('amountUsd').val() >= 100 && newData.child('amountUsd').val() <= 1000 && newData.child('lpUrl').isString() && newData.child('txHash').isString() && newData.child('walletAddress').isString()"
+        }
+      }
+    },
+    "adminReview": {
+      ".read": "auth != null && auth.token.email === 'REPLACE_WITH_ADMIN_EMAIL'",
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        "$submissionId": {
+          ".write": "auth != null && auth.token.email === 'REPLACE_WITH_ADMIN_EMAIL'"
+        }
+      }
+    },
+    "rewardLedger": {
+      ".read": "auth != null && auth.token.email === 'REPLACE_WITH_ADMIN_EMAIL'",
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        "$submissionId": {
+          ".write": "auth != null && auth.token.email === 'REPLACE_WITH_ADMIN_EMAIL'"
+        }
+      }
+    },
+    "withdrawalRequests": {
+      ".read": "auth != null && auth.token.email === 'REPLACE_WITH_ADMIN_EMAIL'",
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        "$submissionId": {
+          ".write": "auth != null && auth.uid === $uid && !data.exists() && root.child('rewardLedger').child($uid).child($submissionId).child('status').val() === 'unlocked' && newData.child('status').val() === 'pending'",
+          ".validate": "newData.hasChildren(['submissionId','amountRND','walletAddress','status','createdAt'])"
+        }
+      }
+    },
+    "withdrawalAdmin": {
+      ".read": "auth != null && auth.token.email === 'REPLACE_WITH_ADMIN_EMAIL'",
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        "$submissionId": {
+          ".write": "auth != null && auth.token.email === 'REPLACE_WITH_ADMIN_EMAIL'"
+        }
+      }
+    }
+  }
+}

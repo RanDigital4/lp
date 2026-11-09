@@ -1,0 +1,5 @@
+import {auth,signInWithEmailAndPassword,sendPasswordResetEmail} from "./firebase.js";
+const form=document.getElementById("loginForm"),msg=document.getElementById("message");
+const friendly=e=>({ "auth/invalid-credential":"Email or password is incorrect.","auth/too-many-requests":"Too many attempts. Please wait and try again.","auth/network-request-failed":"Network error. Check your internet connection."}[e.code]||e.message||"Login failed.");
+form.addEventListener("submit",async e=>{e.preventDefault();msg.textContent="Signing in…";try{await signInWithEmailAndPassword(auth,document.getElementById("email").value.trim(),document.getElementById("password").value);location.href="dashboard.html";}catch(err){msg.textContent=friendly(err);}});
+document.getElementById("resetPassword").addEventListener("click",async()=>{const email=document.getElementById("email").value.trim();if(!email){msg.textContent="Enter your email address first.";return;}try{await sendPasswordResetEmail(auth,email);msg.textContent="Password reset email sent. Check your inbox and spam folder.";}catch(err){msg.textContent=friendly(err);}});
