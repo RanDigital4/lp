@@ -1,4 +1,4 @@
-// Firebase Web SDK configuration for project: lprnd-ddd35
+// Firebase Web SDK configuration for project: lpdigital-71c32
 // The web apiKey is a public project identifier. Protect data with Realtime Database Rules.
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
@@ -11,15 +11,16 @@ import {
   getDatabase, ref, set, get, push, update, onValue, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
+// Your NEW Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDAcwBycPI45y9noMsuV4pZl40IeschhE",
-  authDomain: "lprnd-ddd35.firebaseapp.com",
-  databaseURL: "https://lprnd-ddd35-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "lprnd-ddd35",
-  storageBucket: "lprnd-ddd35.firebasestorage.app",
-  messagingSenderId: "600137724074",
-  appId: "1:600137724074:web:b42bf4777a2fa4e41da0d3",
-  measurementId: "G-H0CVZRKDG8"
+  apiKey: "AIzaSyCcyBRmd6CJytZeE9_WOwwj8HfiZmXNJKI",
+  authDomain: "lpdigital-71c32.firebaseapp.com",
+  databaseURL: "https://lpdigital-71c32-default-rtdb.asia-southeast1.firebasedatabase.app/", // Updated URL
+  projectId: "lpdigital-71c32",
+  storageBucket: "lpdigital-71c32.firebasestorage.app",
+  messagingSenderId: "278560063902",
+  appId: "1:278560063902:web:9ef4e07cec368d5a03568f",
+  measurementId: "G-7H0T1HJQ97"
 };
 
 export const app = initializeApp(firebaseConfig);
