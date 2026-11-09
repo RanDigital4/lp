@@ -1,7 +1,12 @@
-// Public site settings. Replace adminEmail with the exact Firebase Authentication email
-// that will review LP submissions. This is NOT a password or secret.
+// Public site settings. 
+// IMPORTANT: Replace adminEmail with the exact email address you will use to 
+// log into the new Firebase Console (lpdigital-71c32) to review LP submissions. 
+// This is NOT a password or secret.
+
 export const APP_CONFIG = {
-  adminEmail: "REPLACE_WITH_ADMIN_EMAIL",
+  // Example: "yourname@gmail.com" (वह ईमेल जो आपने नए फायरबेस प्रोजेक्ट में रजिस्टर किया है)
+  adminEmail: "randigital4@gmail.com", 
+  
   minimumLpUsd: 100,
   maximumLpUsd: 1000,
   lockMonths: 6,
