@@ -1,30 +1,54 @@
-// Public site settings. 
-// IMPORTANT: Replace adminEmail with the exact email address you will use to 
-// log into the new Firebase Console (lpdigital-71c32) to review LP submissions. 
-// This is NOT a password or secret.
 
 export const APP_CONFIG = {
-  // Example: "yourname@gmail.com" (वह ईमेल जो आपने नए फायरबेस प्रोजेक्ट में रजिस्टर किया है)
-  adminEmail: "randigital4@gmail.com", 
-  
-  minimumLpUsd: 100,
-  maximumLpUsd: 1000,
+  // Admin का वही ईमेल डालें जिससे आप Admin Panel में लॉगिन करते हैं।
+  adminEmail: "YOUR_ADMIN_EMAIL@example.com",
+
+  // RND Token का नेटवर्क
+  networkName: "BNB Smart Chain",
+  chainId: 56,
+  currencySymbol: "BNB",
+  explorerUrl: "https://bscscan.com",
+
+  // LP Reward की लॉक अवधि
   lockMonths: 6,
+
+  // आवेदन की जाँच का लक्ष्य समय
+  approvalTargetHours: 24,
+
+  // प्रोग्राम की प्रस्तावित कुल Reward Reserve
+  rewardReserveRND: 1000,
+
+  // केवल ये LP Amount Reward के लिए मान्य होंगे
   rewardTiers: [
-    { amount: 100, reward: 20 },
-    { amount: 200, reward: 40 },
-    { amount: 300, reward: 60 },
-    { amount: 400, reward: 70 },
-    { amount: 500, reward: 80 },
-    { amount: 600, reward: 100 },
-    { amount: 700, reward: 120 },
-    { amount: 800, reward: 140 },
-    { amount: 900, reward: 160 },
-    { amount: 1000, reward: 180 }
-  ]
+    { amountUsd: 100, rewardRND: 4 },
+    { amountUsd: 250, rewardRND: 9 },
+    { amountUsd: 500, rewardRND: 18 },
+    { amountUsd: 1000, rewardRND: 36 },
+    { amountUsd: 2500, rewardRND: 91 },
+    { amountUsd: 5000, rewardRND: 182 }
+  ],
+
+  // LP आवेदन की शुरुआती स्थिति
+  submissionStatus: "pending",
+
+  // केवल Admin की जाँच के बाद Approved होगा
+  approvedStatus: "approved",
+
+  // छह महीने पूरे होने के बाद Admin Unlock करेगा
+  unlockedStatus: "unlocked"
 };
 
-export function rewardFor(amount) {
-  const tier = APP_CONFIG.rewardTiers.find(item => item.amount === Number(amount));
-  return tier ? tier.reward : 0;
+// दिए गए LP Amount के अनुसार Reward निकालें।
+export function rewardFor(amountUsd) {
+  const amount = Number(amountUsd);
+
+  if (!Number.isFinite(amount)) {
+    return 0;
+  }
+
+  const tier = APP_CONFIG.rewardTiers.find(
+    item => item.amountUsd === amount
+  );
+
+  return tier ? tier.rewardRND : 0;
 }
