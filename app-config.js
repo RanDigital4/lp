@@ -20,12 +20,16 @@ export const APP_CONFIG = {
 
   // केवल ये LP Amount Reward के लिए मान्य होंगे
   rewardTiers: [
-    { amountUsd: 100, rewardRND: 4 },
-    { amountUsd: 250, rewardRND: 9 },
-    { amountUsd: 500, rewardRND: 18 },
-    { amountUsd: 1000, rewardRND: 36 },
-    { amountUsd: 2500, rewardRND: 91 },
-    { amountUsd: 5000, rewardRND: 182 }
+    { amountUsd: 100, rewardRND: 20 },
+    { amountUsd: 200, rewardRND: 40 },
+    { amountUsd: 300, rewardRND: 60 },
+    { amountUsd: 400, rewardRND: 70 },
+    { amountUsd: 500, rewardRND: 80 },
+    { amountUsd: 600, rewardRND: 100 },
+    { amountUsd: 700, rewardRND: 120 },
+    { amountUsd: 800, rewardRND: 140 },
+    { amountUsd: 900, rewardRND: 160 },
+    { amountUsd: 1000, rewardRND: 180 }
   ],
 
   // LP आवेदन की शुरुआती स्थिति
