@@ -4,6 +4,7 @@ import {
   db,
   ref,
   set,
+  get,
   push,
   onValue,
   serverTimestamp,
@@ -12,22 +13,22 @@ import {
   sendEmailVerification
 } from "./firebase.js";
 
-import { APP_CONFIG, rewardFor } from "./app-config.js";
+import {
+  APP_CONFIG,
+  rewardFor
+} from "./app-config.js";
 
 const $ = id => document.getElementById(id);
 
 let currentUser = null;
+
 let submissions = {};
 let reviews = {};
 let ledger = {};
 let withdrawals = {};
 let withdrawalAdmin = {};
 
-let submitting = false;
-let withdrawalSubmitting = false;
-
-const NETWORK_NAME = "BNB Smart Chain";
-const APPROVAL_HOURS = Number(APP_CONFIG.approvalTargetHours || 24);
+let listenersStarted = false;
 
 const esc = value =>
   String(value ?? "").replace(/[&<>"']/g, char => ({
@@ -47,309 +48,260 @@ const validWallet = value =>
 const safeHttpUrl = value => {
   try {
     const url = new URL(value);
-    return ["https:", "http:"].includes(url.protocol) ? url.href : "";
+
+    return url.protocol === "https:" ||
+      url.protocol === "http:"
+      ? url.href
+      : "";
   } catch {
     return "";
   }
 };
 
 const formatDate = value => {
-  if (!value) return "अभी उपलब्ध नहीं";
+  if (!value) return "Not set";
 
   const date = new Date(Number(value));
 
   return Number.isNaN(date.getTime())
-    ? "अभी उपलब्ध नहीं"
-    : date.toLocaleString("en-IN");
+    ? "Not set"
+    : date.toLocaleString();
 };
 
-const formatRND = value =>
-  `${Number(value || 0).toLocaleString("en-IN")} RND`;
-
 function showMessage(element, message, type = "") {
-  if (!element) return;
-
   element.textContent = message;
-  element.className = `form-message ${type}`.trim();
+  element.className = type
+    ? `form-message ${type}`
+    : "form-message";
 }
 
-function statusLabel(status) {
-  const labels = {
-    pending: "PENDING ADMIN APPROVAL",
-    approved: "APPROVED",
-    locked: "LOCKED",
-    unlocked: "UNLOCKED",
-    rejected: "REJECTED",
-    forfeited: "FORFEITED",
-    paid: "PAID"
-  };
-
-  return labels[status] || String(status || "PENDING").toUpperCase();
-}
-
-function statusClass(status) {
-  const allowed = [
-    "pending",
-    "approved",
-    "locked",
-    "unlocked",
-    "rejected",
-    "forfeited",
-    "paid"
-  ];
-
-  return allowed.includes(status) ? status : "pending";
-}
-
-/*
-  Reward options app-config.js से बनेंगे।
-  इससे HTML में पुराने या गलत reward tiers होने पर भी
-  Dashboard सही configured tiers दिखाएगा।
-*/
-function loadRewardOptions() {
-  const amountSelect = $("amount");
-
-  if (!amountSelect) return;
-
-  amountSelect.innerHTML =
-    '<option value="">Select LP value</option>';
-
-  APP_CONFIG.rewardTiers.forEach(tier => {
-    const option = document.createElement("option");
-
-    option.value = String(tier.amountUsd);
-    option.textContent =
-      `$${Number(tier.amountUsd).toLocaleString("en-IN")}`;
-
-    amountSelect.appendChild(option);
-  });
-
-  updateRewardPreview();
-}
-
-function updateRewardPreview() {
-  const amount = Number($("amount")?.value || 0);
-  const reward = rewardFor(amount);
-  const preview = $("rewardPreview");
-
-  if (!preview) return;
-
-  if (!reward) {
-    preview.textContent =
-      "LP value चुनें, आपका प्रस्तावित RND reward यहाँ दिखाई देगा।";
-    return;
-  }
-
-  preview.textContent =
-    `आपका प्रस्तावित Reward: ${formatRND(reward)} · Admin verification के बाद ही Approved होगा।`;
-}
-
-function getSubmissionStatus(id, submission) {
-  const review = reviews[id] || {};
-  const itemLedger = ledger[id] || {};
-
-  if (itemLedger.status === "paid") return "paid";
-  if (itemLedger.status === "forfeited") return "forfeited";
-  if (itemLedger.status === "unlocked") return "unlocked";
-  if (itemLedger.status === "locked") return "locked";
-
-  if (review.status) return review.status;
-
-  return submission.status || "pending";
+function getWithdrawalStatus(id) {
+  return withdrawalAdmin[id]?.status ||
+    withdrawals[id]?.status ||
+    "pending";
 }
 
 function renderRecords() {
   const root = $("records");
 
-  if (!root) return;
+  if (!currentUser) return;
 
   const ids = Object.keys(submissions);
 
   if (!ids.length) {
     root.innerHTML =
-      '<p class="muted">अभी कोई LP आवेदन जमा नहीं हुआ है।</p>';
+      '<p class="muted">No LP submissions yet.</p>';
   } else {
-    const sortedIds = ids.sort((a, b) => {
-      const dateA = Number(submissions[a]?.createdAt || 0);
-      const dateB = Number(submissions[b]?.createdAt || 0);
-      return dateB - dateA;
-    });
-
-    root.innerHTML = sortedIds.map(id => {
+    root.innerHTML = ids.reverse().map(id => {
       const submission = submissions[id] || {};
       const review = reviews[id] || {};
       const itemLedger = ledger[id] || {};
 
-      const status = getSubmissionStatus(id, submission);
+      const status =
+        review.status ||
+        submission.status ||
+        "pending";
 
-      const proposedReward = Number(
-        submission.proposedRewardRND ??
-        rewardFor(submission.amountUsd) ??
-        0
-      );
+      const proposedReward =
+        Number(rewardFor(submission.amountUsd) || 0);
 
-      const approvedReward = Number(
-        itemLedger.rewardRND ??
-        review.rewardRND ??
-        0
-      );
+      const approvedReward =
+        Number(
+          itemLedger.rewardRND ||
+          review.rewardRND ||
+          0
+        );
+
+      const verified =
+        review.status === "approved" ||
+        review.status === "unlocked" ||
+        itemLedger.status === "locked" ||
+        itemLedger.status === "unlocked" ||
+        itemLedger.status === "paid";
 
       const txHash = String(submission.txHash || "");
 
       const txLink = validBscHash(txHash)
         ? `<a href="https://bscscan.com/tx/${encodeURIComponent(txHash)}"
              target="_blank"
-             rel="noopener noreferrer">BscScan पर Transaction देखें ↗</a>`
-        : "Transaction उपलब्ध नहीं";
+             rel="noopener noreferrer">
+             View transaction on BscScan ↗
+           </a>`
+        : "Transaction hash not available";
 
-      const positionUrl = safeHttpUrl(submission.lpUrl || "");
+      const positionUrl = safeHttpUrl(
+        submission.lpUrl || ""
+      );
 
       const positionLink = positionUrl
-        ? `<p>Position URL:
+        ? `<p>
+             LP position:
              <a href="${esc(positionUrl)}"
                 target="_blank"
-                rel="noopener noreferrer">Evidence देखें ↗</a>
+                rel="noopener noreferrer">
+                Open position ↗
+             </a>
            </p>`
         : "";
 
-      const lockEnd = itemLedger.lockEndsAt || review.lockEndsAt;
+      const lockStart =
+        itemLedger.lockStartAt ||
+        review.lockStartAt;
 
-      const isApproved = [
-        "approved",
-        "locked",
-        "unlocked",
-        "paid"
-      ].includes(status);
+      const lockEnd =
+        itemLedger.lockEndsAt ||
+        review.lockEndsAt;
 
-      const verification = isApproved
-        ? `<p class="verification-success">
-             ✓ <b>Admin Verified — Approved</b>
-           </p>`
+      const lockDetails = lockStart || lockEnd
+        ? `
+          <p>Lock started: ${formatDate(lockStart)}</p>
+          <p>Lock ends: ${formatDate(lockEnd)}</p>
+        `
         : "";
 
-      let rewardDetails = `
-        <p>Proposed Reward:
-          <b>${formatRND(proposedReward)}</b>
-        </p>
-      `;
+      const withdrawalStatus = getWithdrawalStatus(id);
 
-      if (isApproved) {
-        rewardDetails += `
-          <p>Approved Reward:
-            <b>${formatRND(approvedReward)}</b>
+      const withdrawalInfo = withdrawals[id]
+        ? `
+          <p>
+            Withdrawal status:
+            <b>${esc(withdrawalStatus.toUpperCase())}</b>
           </p>
-          <p>Lock Start:
-            ${formatDate(itemLedger.lockStartAt || review.lockStartAt)}
-          </p>
-          <p>Lock Ends:
-            <b>${formatDate(lockEnd)}</b>
-          </p>
-        `;
-      }
-
-      if (status === "pending") {
-        rewardDetails += `
-          <p class="pending-note">
-            आपका LP आवेदन प्राप्त हो गया है।
-            सामान्यतः ${APPROVAL_HOURS} घंटे के अंदर Admin
-            BNB Smart Chain पर इसकी जाँच करेगा।
-            जाँच पूरी होने तक Reward Pending रहेगा।
-          </p>
-        `;
-      }
-
-      if (status === "rejected") {
-        rewardDetails += `
-          <p class="form-message error">
-            आपका आवेदन अप्रूव नहीं हुआ।
-            ${esc(review.reason || "कृपया Admin से संपर्क करें।")}
-          </p>
-        `;
-      }
-
-      if (status === "locked") {
-        rewardDetails += `
-          <p class="pending-note">
-            आपका Reward Approved है और छह महीने के Lock में है।
-            Lock पूरा होने पर Admin अंतिम जाँच करेगा।
-          </p>
-        `;
-      }
-
-      if (status === "unlocked") {
-        rewardDetails += `
-          <p class="verification-success">
-            ✓ Lock अवधि पूरी। Withdrawal Request उपलब्ध है।
-          </p>
-        `;
-      }
-
-      if (status === "paid") {
-        rewardDetails += `
-          <p class="verification-success">
-            ✓ Reward भुगतान पूरा हो गया है।
-          </p>
-        `;
-      }
-
-      if (review.reason && status !== "rejected") {
-        rewardDetails += `
-          <p>Admin Note: ${esc(review.reason)}</p>
-        `;
-      }
-
-      const date = formatDate(submission.createdAt);
+          ${
+            withdrawalAdmin[id]?.txHash
+              ? `<p>Transfer TX: ${esc(withdrawalAdmin[id].txHash)}</p>`
+              : ""
+          }
+        `
+        : "";
 
       return `
         <article class="record-card">
+
           <div class="record-top">
+
             <strong>
-              ${esc(submission.dex || "LP Application")}
+              ${esc(submission.dex || "DEX")}
               · $${esc(submission.amountUsd)}
             </strong>
-            <span class="tag ${statusClass(status)}">
-              ${statusLabel(status)}
+
+            <span class="tag ${esc(status)}">
+              ${verified ? "✓ VERIFIED · " : ""}
+              ${esc(status.toUpperCase())}
             </span>
+
           </div>
 
-          ${verification}
+          <p>
+            Network:
+            ${esc(submission.network || "BNB Smart Chain")}
+          </p>
 
-          <p>Network: ${NETWORK_NAME}</p>
-          <p>Transaction: ${txLink}</p>
-          <p>LP Wallet: ${esc(submission.walletAddress || "—")}</p>
+          <p>
+            Transaction:
+            ${txLink}
+          </p>
 
-          ${submission.positionId
-            ? `<p>Position ID: ${esc(submission.positionId)}</p>`
-            : ""}
+          <p>
+            LP wallet:
+            ${esc(submission.walletAddress || "—")}
+          </p>
+
+          ${
+            submission.positionId
+              ? `<p>Position ID: ${esc(submission.positionId)}</p>`
+              : ""
+          }
 
           ${positionLink}
 
-          <p>Submitted: ${date}</p>
+          <p>
+            Submitted:
+            ${formatDate(submission.submittedAt || submission.createdAt)}
+          </p>
 
-          ${rewardDetails}
+          <p>
+            Proposed reward:
+            <b>${proposedReward} RND</b>
+          </p>
+
+          ${
+            verified
+              ? `
+                <p>
+                  Approved reward:
+                  <b>${approvedReward} RND</b>
+                </p>
+              `
+              : ""
+          }
+
+          ${lockDetails}
+
+          ${
+            status === "pending"
+              ? `<p>Your application is waiting for admin verification. Target review time: 24 hours.</p>`
+              : ""
+          }
+
+          ${
+            status === "rejected"
+              ? `<p>Application rejected. ${esc(review.reason || "")}</p>`
+              : ""
+          }
+
+          ${
+            status === "forfeited"
+              ? `<p>Reward forfeited. ${esc(review.reason || "")}</p>`
+              : ""
+          }
+
+          ${withdrawalInfo}
+
+          ${
+            itemLedger.status === "paid"
+              ? `<p><b>RND transfer recorded as completed.</b></p>`
+              : ""
+          }
+
         </article>
       `;
     }).join("");
   }
 
-  renderRewardSummary();
-  renderWithdrawalOptions();
-  renderWithdrawalHistory();
-}
+  // Withdrawal options
 
-function renderRewardSummary() {
+  const unlocked = Object.entries(ledger).filter(
+    ([id, item]) =>
+      item.status === "unlocked" &&
+      !withdrawals[id]
+  );
+
+  $("withdrawRecord").innerHTML = unlocked.length
+    ? unlocked.map(([id, item]) => `
+        <option value="${esc(id)}">
+          ${Number(item.rewardRND || 0)} RND · ${esc(id.slice(0, 9))}
+        </option>
+      `).join("")
+    : '<option value="">No unlocked rewards</option>';
+
+  // Reward totals
+
   let approved = 0;
   let locked = 0;
   let available = 0;
 
   Object.entries(ledger).forEach(([id, item]) => {
-    if (!item || item.status === "forfeited") return;
+    if (
+      item.status === "forfeited" ||
+      item.status === "paid"
+    ) {
+      return;
+    }
 
     const amount = Number(item.rewardRND || 0);
 
-    if (["locked", "unlocked", "paid"].includes(item.status)) {
-      approved += amount;
-    }
+    approved += amount;
 
     if (item.status === "locked") {
       locked += amount;
@@ -357,125 +309,83 @@ function renderRewardSummary() {
 
     if (
       item.status === "unlocked" &&
-      !withdrawals[id] &&
-      withdrawalAdmin[id]?.status !== "paid"
+      !withdrawals[id]
     ) {
       available += amount;
     }
   });
 
-  if ($("approvedReward")) {
-    $("approvedReward").textContent = formatRND(approved);
-  }
+  $("approvedReward").textContent = `${approved} RND`;
+  $("lockedReward").textContent = `${locked} RND`;
+  $("availableReward").textContent = `${available} RND`;
 
-  if ($("lockedReward")) {
-    $("lockedReward").textContent = formatRND(locked);
-  }
+  // Withdrawal history
 
-  if ($("availableReward")) {
-    $("availableReward").textContent = formatRND(available);
-  }
-}
+  const withdrawalItems = Object.entries(withdrawals);
 
-function renderWithdrawalOptions() {
-  const select = $("withdrawRecord");
+  $("withdrawalRecords").innerHTML =
+    withdrawalItems.length
+      ? withdrawalItems.map(([id, item]) => {
+          const adminItem = withdrawalAdmin[id] || {};
 
-  if (!select) return;
+          const status =
+            adminItem.status ||
+            item.status ||
+            "pending";
 
-  select.innerHTML = "";
+          return `
+            <article class="record-card">
 
-  const options = Object.entries(ledger).filter(([id, item]) =>
-    item &&
-    item.status === "unlocked" &&
-    !withdrawals[id] &&
-    withdrawalAdmin[id]?.status !== "paid"
-  );
+              <div class="record-top">
+                <strong>
+                  Withdrawal · ${Number(item.amountRND || 0)} RND
+                </strong>
 
-  if (!options.length) {
-    select.innerHTML =
-      '<option value="">No unlocked rewards</option>';
-    return;
-  }
+                <span class="tag ${esc(status)}">
+                  ${esc(status.toUpperCase())}
+                </span>
+              </div>
 
-  select.innerHTML =
-    '<option value="">Select unlocked reward</option>';
+              <p>Wallet: ${esc(item.walletAddress || "—")}</p>
 
-  options.forEach(([id, item]) => {
-    const option = document.createElement("option");
+              ${
+                adminItem.txHash
+                  ? `<p>Transfer TX: ${esc(adminItem.txHash)}</p>`
+                  : ""
+              }
 
-    option.value = id;
-    option.textContent =
-      `${formatRND(item.rewardRND)} · ${id.slice(0, 9)}`;
+              <p>
+                Request date:
+                ${formatDate(item.createdAt)}
+              </p>
 
-    select.appendChild(option);
-  });
-}
-
-function renderWithdrawalHistory() {
-  const root = $("withdrawalRecords");
-
-  if (!root) return;
-
-  const combined = {
-    ...withdrawals,
-    ...withdrawalAdmin
-  };
-
-  const entries = Object.entries(combined);
-
-  if (!entries.length) {
-    root.innerHTML = "";
-    return;
-  }
-
-  root.innerHTML = entries.map(([id, item]) => {
-    const status = item.status || "pending";
-
-    const tx = validBscHash(item.txHash || "")
-      ? `<p>Transfer TX:
-           <a href="https://bscscan.com/tx/${encodeURIComponent(item.txHash)}"
-              target="_blank"
-              rel="noopener noreferrer">BscScan पर देखें ↗</a>
-         </p>`
+            </article>
+          `;
+        }).join("")
       : "";
-
-    return `
-      <article class="record-card">
-        <div class="record-top">
-          <strong>Withdrawal · ${formatRND(item.amountRND)}</strong>
-          <span class="tag ${statusClass(status)}">
-            ${statusLabel(status)}
-          </span>
-        </div>
-        <p>Receiving Wallet: ${esc(item.walletAddress || "—")}</p>
-        ${tx}
-        <p>Record ID: ${esc(id)}</p>
-      </article>
-    `;
-  }).join("");
 }
 
-/*
-  LP Application Submit
-*/
-$("amount")?.addEventListener("change", updateRewardPreview);
+// Reward preview
 
-$("lpForm")?.addEventListener("submit", async event => {
+$("amount").addEventListener("change", () => {
+  const reward = rewardFor($("amount").value);
+
+  $("rewardPreview").textContent = reward
+    ? `Proposed reward: ${reward} RND · Pending admin verification.`
+    : "Choose a valid tier.";
+});
+
+// LP application submission
+
+$("lpForm").addEventListener("submit", async event => {
   event.preventDefault();
-
-  if (submitting) return;
 
   const message = $("formMessage");
 
-  if (!currentUser) {
-    showMessage(message, "कृपया पहले लॉगिन करें।", "error");
-    return;
-  }
-
-  if (!currentUser.emailVerified) {
+  if (!currentUser?.emailVerified) {
     showMessage(
       message,
-      "LP आवेदन से पहले अपना Email Verify करें।",
+      "Verify your email before submitting.",
       "error"
     );
     return;
@@ -488,31 +398,29 @@ $("lpForm")?.addEventListener("submit", async event => {
   const txHash = $("txHash").value.trim();
   const walletAddress = $("wallet").value.trim();
 
-  const positionId = $("positionId")?.value.trim() || "";
-  const lpUrlInput = $("lpUrl")?.value.trim() || "";
-  const lpUrl = lpUrlInput ? safeHttpUrl(lpUrlInput) : "";
-  const notes = $("notes")?.value.trim() || "";
+  const positionId =
+    $("positionId").value.trim();
 
-  if (
-    ![
-      "PancakeSwap V2 BNB Smart Chain",
-      "Uniswap V4 BNB Smart Chain"
-    ].includes(dex)
-  ) {
+  const lpUrlInput =
+    $("lpUrl").value.trim();
+
+  const lpUrl = lpUrlInput
+    ? safeHttpUrl(lpUrlInput)
+    : "";
+
+  if (!dex) {
     showMessage(
       message,
-      "PancakeSwap V2 या Uniswap V4 चुनें।",
+      "Choose PancakeSwap V2 or Uniswap V4 on BNB Smart Chain.",
       "error"
     );
     return;
   }
 
-  if (!reward || !APP_CONFIG.rewardTiers.some(
-    tier => Number(tier.amountUsd) === amount
-  )) {
+  if (!reward) {
     showMessage(
       message,
-      "कृपया उपलब्ध सही LP Reward Tier चुनें।",
+      "Select one of the configured reward tiers.",
       "error"
     );
     return;
@@ -521,7 +429,7 @@ $("lpForm")?.addEventListener("submit", async event => {
   if (!validBscHash(txHash)) {
     showMessage(
       message,
-      "सही BNB Smart Chain Transaction Hash डालें।",
+      "Enter a valid BNB Smart Chain transaction hash.",
       "error"
     );
     return;
@@ -530,7 +438,7 @@ $("lpForm")?.addEventListener("submit", async event => {
   if (!validWallet(walletAddress)) {
     showMessage(
       message,
-      "सही BNB Smart Chain LP Wallet Address डालें।",
+      "Enter a valid BNB Smart Chain wallet address.",
       "error"
     );
     return;
@@ -539,136 +447,86 @@ $("lpForm")?.addEventListener("submit", async event => {
   if (lpUrlInput && !lpUrl) {
     showMessage(
       message,
-      "Position URL सही http या https लिंक होना चाहिए।",
+      "Position URL must begin with http:// or https://.",
       "error"
     );
     return;
   }
 
-  submitting = true;
+  const submitButton =
+    $("lpForm").querySelector('button[type="submit"]');
 
-  const submitButton = $("lpForm").querySelector(
-    'button[type="submit"]'
-  );
+  submitButton.disabled = true;
 
-  if (submitButton) {
-    submitButton.disabled = true;
-    submitButton.textContent = "Submitting...";
-  }
-
-  showMessage(message, "आपका LP आवेदन Firebase में सेव हो रहा है...");
+  showMessage(message, "Submitting LP application…");
 
   try {
-    const submissionRef = push(
+    const itemRef = push(
       ref(db, `submissions/${currentUser.uid}`)
     );
 
-    const submissionId = submissionRef.key;
-
-    const now = Date.now();
-
-    const record = {
+    await set(itemRef, {
       uid: currentUser.uid,
       email: currentUser.email || "",
-
       dex,
-      network: NETWORK_NAME,
+      network: "BNB Smart Chain",
       chainId: 56,
-
       protocolVersion: dex.startsWith("PancakeSwap")
         ? "V2"
         : "V4",
-
       amountUsd: amount,
       proposedRewardRND: reward,
-
       txHash,
       walletAddress,
-
-      positionId,
-      lpUrl,
-
-      notes,
-
+      positionId: positionId || "",
+      lpUrl: lpUrl || "",
+      notes: $("notes").value.trim(),
       status: "pending",
-      verificationStatus: "pending",
-
-      approvalTargetHours: APPROVAL_HOURS,
-
+      approvalTargetHours: APP_CONFIG.approvalTargetHours || 24,
       createdAt: serverTimestamp(),
-      submittedAt: now,
-      updatedAt: serverTimestamp()
-    };
-
-    /*
-      Application Firebase में save होगा।
-      Reward अभी केवल proposed है, approved नहीं।
-    */
-    await set(submissionRef, record);
-
-    /*
-      Save सफल होने के बाद तुरंत UI में रिकॉर्ड दिखाएँ।
-      Firebase listener भी इसी रिकॉर्ड को real-time update करेगा।
-    */
-    submissions[submissionId] = {
-      ...record,
-      createdAt: now
-    };
-
-    renderRecords();
+      submittedAt: Date.now()
+    });
 
     $("lpForm").reset();
-    updateRewardPreview();
+
+    $("rewardPreview").textContent =
+      "Choose a tier to view the proposed RND reward.";
 
     showMessage(
       message,
-      `आपका LP आवेदन सफलतापूर्वक जमा हो गया है। आपका प्रस्तावित Reward ${formatRND(reward)} है। Status: Pending Admin Approval. सामान्यतः ${APPROVAL_HOURS} घंटे के अंदर BNB Smart Chain पर जाँच की जाएगी। अभी टोकन ट्रांसफर नहीं हुए हैं।`,
+      `Application submitted successfully.\nProposed reward: ${reward} RND.\nStatus: Pending admin verification.\nThis is a proposed reward, not an actual token transfer.`,
       "success"
     );
 
   } catch (error) {
-    console.error("LP submission error:", error);
-
     showMessage(
       message,
-      "आवेदन Firebase में सेव नहीं हो पाया: " +
-        (error?.message || "Unknown error"),
+      "Could not submit: " + error.message,
       "error"
     );
-
   } finally {
-    submitting = false;
-
-    if (submitButton) {
-      submitButton.disabled = false;
-      submitButton.textContent = "Submit LP for verification";
-    }
+    submitButton.disabled = false;
   }
 });
 
-/*
-  Withdrawal Request
-  केवल Admin द्वारा unlocked record पर ही request बनेगी।
-*/
-$("withdrawForm")?.addEventListener("submit", async event => {
+// Withdrawal request
+
+$("withdrawForm").addEventListener("submit", async event => {
   event.preventDefault();
-
-  if (withdrawalSubmitting) return;
-
-  const message = $("withdrawMessage");
-
-  if (!currentUser) {
-    showMessage(message, "कृपया लॉगिन करें।", "error");
-    return;
-  }
 
   const id = $("withdrawRecord").value;
   const walletAddress = $("withdrawWallet").value.trim();
+  const message = $("withdrawMessage");
+
+  if (!currentUser) {
+    showMessage(message, "Please sign in again.", "error");
+    return;
+  }
 
   if (!id) {
     showMessage(
       message,
-      "अभी कोई Withdrawal-ready Reward उपलब्ध नहीं है।",
+      "No withdrawal-ready reward record.",
       "error"
     );
     return;
@@ -677,7 +535,7 @@ $("withdrawForm")?.addEventListener("submit", async event => {
   if (!validWallet(walletAddress)) {
     showMessage(
       message,
-      "सही BNB Smart Chain Receiving Wallet Address डालें।",
+      "Enter a valid BNB Smart Chain receiving wallet address.",
       "error"
     );
     return;
@@ -688,88 +546,60 @@ $("withdrawForm")?.addEventListener("submit", async event => {
   if (!item || item.status !== "unlocked") {
     showMessage(
       message,
-      "यह Reward अभी Admin द्वारा Unlock नहीं किया गया है।",
+      "This reward has not been unlocked by admin.",
       "error"
     );
     return;
   }
 
-  if (withdrawals[id] || withdrawalAdmin[id]?.status === "paid") {
+  if (withdrawals[id]) {
     showMessage(
       message,
-      "इस Reward के लिए Withdrawal Request पहले से मौजूद है।",
+      "A withdrawal request already exists for this reward.",
       "error"
     );
     return;
   }
 
-  withdrawalSubmitting = true;
+  showMessage(message, "Submitting withdrawal request…");
 
-  const button = $("withdrawForm").querySelector(
-    'button[type="submit"]'
-  );
+  const submitButton =
+    $("withdrawForm").querySelector('button[type="submit"]');
 
-  if (button) {
-    button.disabled = true;
-    button.textContent = "Submitting...";
-  }
-
-  showMessage(message, "Withdrawal Request सेव हो रही है...");
+  submitButton.disabled = true;
 
   try {
-    const requestRef = ref(
-      db,
-      `withdrawalRequests/${currentUser.uid}/${id}`
+    await set(
+      ref(db, `withdrawalRequests/${currentUser.uid}/${id}`),
+      {
+        submissionId: id,
+        amountRND: Number(item.rewardRND),
+        walletAddress,
+        status: "pending",
+        createdAt: serverTimestamp()
+      }
     );
-
-    const request = {
-      submissionId: id,
-      amountRND: Number(item.rewardRND || 0),
-      walletAddress,
-      status: "pending",
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp()
-    };
-
-    await set(requestRef, request);
-
-    withdrawals[id] = {
-      ...request,
-      createdAt: Date.now()
-    };
-
-    renderRecords();
 
     showMessage(
       message,
-      "Withdrawal Request सफलतापूर्वक जमा हो गई है। Admin मैनुअल जाँच और वास्तविक RND ट्रांसफर करेगा।",
+      "Withdrawal request submitted for admin processing. This does not transfer tokens automatically.",
       "success"
     );
 
   } catch (error) {
-    console.error("Withdrawal request error:", error);
-
     showMessage(
       message,
-      "Withdrawal Request सेव नहीं हो पाई: " +
-        (error?.message || "Unknown error"),
+      "Withdrawal request failed: " + error.message,
       "error"
     );
-
   } finally {
-    withdrawalSubmitting = false;
-
-    if (button) {
-      button.disabled = false;
-      button.textContent = "Request RND withdrawal";
-    }
+    submitButton.disabled = false;
   }
 });
 
-/*
-  Logout
-*/
-$("logoutBtn")?.addEventListener("click", async () => {
+// Logout
+
+$("logoutBtn").addEventListener("click", async () => {
   try {
     await signOut(auth);
     location.href = "index.html";
@@ -778,12 +608,57 @@ $("logoutBtn")?.addEventListener("click", async () => {
   }
 });
 
-/*
-  Firebase Authentication and Real-time Database listeners
-*/
-loadRewardOptions();
+// Firebase listeners
 
-onAuthStateChanged(auth, async user => {
+function startListeners(user) {
+  if (listenersStarted) return;
+
+  listenersStarted = true;
+
+  onValue(
+    ref(db, `submissions/${user.uid}`),
+    snapshot => {
+      submissions = snapshot.val() || {};
+      renderRecords();
+    }
+  );
+
+  onValue(
+    ref(db, `adminReview/${user.uid}`),
+    snapshot => {
+      reviews = snapshot.val() || {};
+      renderRecords();
+    }
+  );
+
+  onValue(
+    ref(db, `rewardLedger/${user.uid}`),
+    snapshot => {
+      ledger = snapshot.val() || {};
+      renderRecords();
+    }
+  );
+
+  onValue(
+    ref(db, `withdrawalRequests/${user.uid}`),
+    snapshot => {
+      withdrawals = snapshot.val() || {};
+      renderRecords();
+    }
+  );
+
+  onValue(
+    ref(db, `withdrawalAdmin/${user.uid}`),
+    snapshot => {
+      withdrawalAdmin = snapshot.val() || {};
+      renderRecords();
+    }
+  );
+}
+
+// Authentication
+
+onAuthStateChanged(auth, user => {
   if (!user) {
     location.href = "login.html";
     return;
@@ -791,33 +666,33 @@ onAuthStateChanged(auth, async user => {
 
   currentUser = user;
 
-  $("welcome").textContent = `Welcome, ${user.email || "Member"}`;
+  $("welcome").textContent =
+    `Welcome, ${user.email}`;
 
-  $("accountStatus").textContent = user.emailVerified
-    ? "Email verified"
-    : "Verify email";
+  $("accountStatus").textContent =
+    user.emailVerified
+      ? "Email verified"
+      : "Verify email";
 
-  $("verifyNotice").hidden = !!user.emailVerified;
+  $("verifyNotice").hidden =
+    !!user.emailVerified;
 
-  if (
-    user.email &&
-    user.email.toLowerCase() ===
-      String(APP_CONFIG.adminEmail || "").toLowerCase()
-  ) {
+  if (user.email === APP_CONFIG.adminEmail) {
     $("adminLink").hidden = false;
   }
 
   if (!user.emailVerified) {
     $("verifyNotice").innerHTML = `
       Please verify your email before submitting LP proof.
-      <button id="resendVerify"
-              class="btn-small btn-neutral"
-              type="button">
+      <button
+        id="resendVerify"
+        class="btn-small btn-neutral"
+        type="button">
         Resend verification email
       </button>
     `;
 
-    $("resendVerify")?.addEventListener("click", async () => {
+    $("resendVerify").addEventListener("click", async () => {
       try {
         await sendEmailVerification(user);
         alert("Verification email sent.");
@@ -827,73 +702,5 @@ onAuthStateChanged(auth, async user => {
     });
   }
 
-  /*
-    User's own LP submissions
-  */
-  onValue(
-    ref(db, `submissions/${user.uid}`),
-    snapshot => {
-      submissions = snapshot.val() || {};
-      renderRecords();
-    },
-    error => {
-      console.error("Submissions listener:", error);
-    }
-  );
-
-  /*
-    Admin review results
-  */
-  onValue(
-    ref(db, `adminReview/${user.uid}`),
-    snapshot => {
-      reviews = snapshot.val() || {};
-      renderRecords();
-    },
-    error => {
-      console.error("Admin review listener:", error);
-    }
-  );
-
-  /*
-    Reward ledger
-  */
-  onValue(
-    ref(db, `rewardLedger/${user.uid}`),
-    snapshot => {
-      ledger = snapshot.val() || {};
-      renderRecords();
-    },
-    error => {
-      console.error("Reward ledger listener:", error);
-    }
-  );
-
-  /*
-    Withdrawal requests
-  */
-  onValue(
-    ref(db, `withdrawalRequests/${user.uid}`),
-    snapshot => {
-      withdrawals = snapshot.val() || {};
-      renderRecords();
-    },
-    error => {
-      console.error("Withdrawal listener:", error);
-    }
-  );
-
-  /*
-    Admin payment / withdrawal status
-  */
-  onValue(
-    ref(db, `withdrawalAdmin/${user.uid}`),
-    snapshot => {
-      withdrawalAdmin = snapshot.val() || {};
-      renderRecords();
-    },
-    error => {
-      console.error("Withdrawal admin listener:", error);
-    }
-  );
+  startListeners(user);
 });
