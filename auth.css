@@ -1,1 +1,255 @@
-.auth-body{background:linear-gradient(135deg,#f6faf9,#edf3f8);min-height:100vh}.auth-shell{width:min(500px,calc(100% - 30px));margin:36px auto;display:grid;gap:22px}.auth-shell>.brand{justify-self:center}.auth-card{background:#fff;border:1px solid #e5ebf0;border-radius:20px;padding:30px;box-shadow:0 20px 60px #10213b12}.auth-card h1{font:700 32px var(--display);margin:10px 0}.muted{color:#718096;line-height:1.65;font-size:13px}.auth-card form{display:grid;gap:15px;margin-top:22px}.auth-card label,.lp-form label{display:grid;gap:7px;font-size:12px;font-weight:700;color:#32435b}.auth-card input,.lp-form input,.lp-form select,.lp-form textarea{width:100%;border:1px solid #dce4ec;border-radius:9px;padding:12px 13px;font:14px var(--font);color:#17263c;background:#fff;outline:none}.auth-card input:focus,.lp-form input:focus,.lp-form select:focus,.lp-form textarea:focus{border-color:#2ab58a;box-shadow:0 0 0 3px #2ab58a20}.auth-card label small{font-weight:400;color:#77869a;line-height:1.5}.text-button{border:0;background:none;color:#138866;font-weight:700;cursor:pointer;padding:14px 0 0}.auth-message,.form-message{font-size:12px;line-height:1.6;white-space:pre-wrap}.auth-switch{text-align:center;font-size:13px;color:#68778c;margin:20px 0}.auth-switch a,.back-link{color:#118a67;font-weight:700}.back-link{display:block;text-align:center;font-size:12px}.auth-message:empty{display:none}
+/* =========================================================
+   auth.css — Login / Register / Forms
+   style.css के साथ लोड करें (same design tokens)
+   ========================================================= */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+/* Tokens (style.css में पहले से हैं; यहाँ fallback के लिए दोहराए हैं) */
+:root {
+  --navy: #091426;
+  --navy-3: #16304f;
+  --ink: #12213a;
+  --muted: #5b6b82;
+  --soft: #8794a7;
+  --green: #62e0b0;
+  --green-600: #1fa97f;
+  --green-700: #168a68;
+  --green-50: #e9f9f2;
+  --line: #e6ebf2;
+  --font: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --display: 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
+  --ease: cubic-bezier(.22, .61, .36, 1);
+}
+
+/* =========================================================
+   PAGE
+   ========================================================= */
+.auth-body {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 15% 0%, rgba(98, 224, 176, .18), transparent 45%),
+    radial-gradient(ellipse at 90% 100%, rgba(22, 48, 79, .12), transparent 50%),
+    linear-gradient(135deg, #f6faf9, #edf3f8);
+  background-attachment: fixed;
+}
+
+.auth-shell {
+  width: min(500px, calc(100% - 32px));
+  margin: 40px auto;
+  display: grid;
+  gap: 24px;
+}
+.auth-shell > .brand { justify-self: center; }
+
+/* =========================================================
+   CARD
+   ========================================================= */
+.auth-card {
+  position: relative;
+  background: #fff;
+  border: 1px solid #e3e9f0;
+  border-radius: 22px;
+  padding: 38px 36px 34px;
+  box-shadow:
+    0 2px 4px rgba(9, 20, 38, .04),
+    0 24px 64px rgba(16, 33, 59, .12);
+  overflow: hidden;
+}
+.auth-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--green-600), var(--green), var(--green-600));
+}
+
+.auth-card h1 {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 1.15;
+  letter-spacing: -.035em;
+  color: var(--navy);
+  margin: 12px 0 10px;
+}
+
+.muted {
+  color: var(--muted);
+  line-height: 1.7;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* =========================================================
+   FORM
+   ========================================================= */
+.auth-card form {
+  display: grid;
+  gap: 18px;
+  margin-top: 26px;
+}
+
+.auth-card label,
+.lp-form label {
+  display: grid;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #2b3d56;
+}
+
+.auth-card input,
+.lp-form input,
+.lp-form select,
+.lp-form textarea {
+  width: 100%;
+  border: 1px solid #d8e1ea;
+  border-radius: 11px;
+  padding: 13px 15px;
+  font: 500 15px/1.4 var(--font);
+  color: #17263c;
+  background: #fbfcfe;
+  outline: none;
+  transition: border-color .2s var(--ease), box-shadow .2s var(--ease), background .2s;
+}
+.lp-form textarea { min-height: 110px; resize: vertical; }
+.lp-form select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%2366758b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+}
+
+.auth-card input::placeholder,
+.lp-form input::placeholder,
+.lp-form textarea::placeholder { color: #a3aebd; font-weight: 400; }
+
+.auth-card input:hover,
+.lp-form input:hover,
+.lp-form select:hover,
+.lp-form textarea:hover { border-color: #bccad8; }
+
+.auth-card input:focus,
+.lp-form input:focus,
+.lp-form select:focus,
+.lp-form textarea:focus {
+  background: #fff;
+  border-color: var(--green-600);
+  box-shadow: 0 0 0 4px rgba(31, 169, 127, .16);
+}
+
+.auth-card input:disabled,
+.lp-form input:disabled,
+.lp-form select:disabled,
+.lp-form textarea:disabled { background: #f1f4f8; color: #8a97a8; cursor: not-allowed; }
+
+.auth-card label small {
+  font-weight: 400;
+  color: var(--soft);
+  line-height: 1.55;
+  font-size: 12px;
+}
+
+/* Form buttons (style.css के .button के साथ मेल खाते) */
+.auth-card form .button,
+.lp-form .button { margin-top: 4px; padding: 16px 24px; }
+
+.text-button {
+  border: 0;
+  background: none;
+  color: var(--green-700);
+  font: 700 14px var(--font);
+  cursor: pointer;
+  padding: 14px 0 0;
+  transition: color .2s;
+}
+.text-button:hover { color: var(--navy); text-decoration: underline; text-underline-offset: 3px; }
+
+/* =========================================================
+   MESSAGES
+   ========================================================= */
+.auth-message,
+.form-message {
+  font-size: 13px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--green-50);
+  border: 1px solid #c6ecdc;
+  color: var(--green-700);
+}
+.auth-message.error, .form-message.error,
+.auth-message.is-error, .form-message.is-error {
+  background: #fff1f1;
+  border-color: #f6caca;
+  color: #b42323;
+}
+.auth-message.success, .form-message.success,
+.auth-message.is-success, .form-message.is-success {
+  background: var(--green-50);
+  border-color: #c6ecdc;
+  color: var(--green-700);
+}
+.auth-message:empty,
+.form-message:empty { display: none; }
+
+/* =========================================================
+   LINKS
+   ========================================================= */
+.auth-switch {
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted);
+  margin: 24px 0 0;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+.auth-switch a,
+.back-link {
+  color: var(--green-700);
+  font-weight: 700;
+  transition: color .2s;
+}
+.auth-switch a:hover,
+.back-link:hover { color: var(--navy); text-decoration: underline; text-underline-offset: 3px; }
+
+.back-link {
+  display: block;
+  text-align: center;
+  font-size: 13px;
+}
+
+/* =========================================================
+   FOCUS (keyboard)
+   ========================================================= */
+.text-button:focus-visible,
+.auth-switch a:focus-visible,
+.back-link:focus-visible {
+  outline: 3px solid var(--green-600);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+@media (max-width: 520px) {
+  .auth-shell { margin: 24px auto; gap: 20px; }
+  .auth-card { padding: 30px 22px 26px; border-radius: 18px; }
+  .auth-card h1 { font-size: 28px; }
+  /* iOS पर input focus पर zoom रोकने के लिए 16px */
+  .auth-card input,
+  .lp-form input,
+  .lp-form select,
+  .lp-form textarea { font-size: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
