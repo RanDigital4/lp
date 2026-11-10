@@ -1,10 +1,13 @@
+
 /* =========================================================
-   dashboard.css — User & Admin Dashboard
-   style.css (+ auth.css for .lp-form fields) के साथ लोड करें
+   dashboard.css — RND User & Admin Dashboard
+   Works with styles.css and auth.css
    ========================================================= */
+
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Space+Grotesk:wght@500;600;700&display=swap');
 
-/* Tokens (fallback — style.css में पहले से मौजूद) */
+/* DESIGN TOKENS */
+
 :root {
   --navy: #091426;
   --navy-3: #16304f;
@@ -27,6 +30,7 @@
 /* =========================================================
    PAGE & HEADER
    ========================================================= */
+
 .dash-body {
   min-height: 100vh;
   background:
@@ -57,16 +61,22 @@
   font-weight: 600;
   color: #4d5d74;
 }
+
 .dash-header nav > a {
   padding: 9px 13px;
   border-radius: 9px;
   transition: color .2s var(--ease), background .2s var(--ease);
 }
-.dash-header nav > a:hover { color: var(--green-700); background: var(--green-50); }
+
+.dash-header nav > a:hover {
+  color: var(--green-700);
+  background: var(--green-50);
+}
 
 /* =========================================================
    LAYOUT & TITLE
    ========================================================= */
+
 .dash-wrap {
   width: min(1160px, calc(100% - 32px));
   margin: 38px auto 80px;
@@ -79,6 +89,7 @@
   gap: 16px;
   margin-bottom: 28px;
 }
+
 .dash-title h1 {
   font-family: var(--display);
   font-weight: 700;
@@ -106,6 +117,7 @@
 /* =========================================================
    METRICS
    ========================================================= */
+
 .metric-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -127,6 +139,7 @@
   overflow: hidden;
   transition: transform .3s var(--ease), box-shadow .3s var(--ease), border-color .3s;
 }
+
 .metric-card::before {
   content: "";
   position: absolute;
@@ -135,11 +148,13 @@
   background: linear-gradient(90deg, var(--green-600), var(--green));
   opacity: .9;
 }
+
 .metric-card:hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-md);
   border-color: #cfe9de;
 }
+
 .metric-card span,
 .metric-card small {
   display: block;
@@ -147,12 +162,14 @@
   font-size: 13px;
   font-weight: 500;
 }
+
 .metric-card span {
   font-size: 12px;
   font-weight: 700;
   letter-spacing: .8px;
   text-transform: uppercase;
 }
+
 .metric-card strong {
   display: block;
   font-family: var(--display);
@@ -166,7 +183,11 @@
 /* =========================================================
    PANELS
    ========================================================= */
-.dash-panel { margin-top: 20px; box-shadow: var(--shadow-md); }
+
+.dash-panel {
+  margin-top: 20px;
+  box-shadow: var(--shadow-md);
+}
 
 .panel-heading {
   display: flex;
@@ -177,6 +198,7 @@
   padding-bottom: 16px;
   border-bottom: 1px solid #eff2f6;
 }
+
 .panel-heading h2 {
   font-family: var(--display);
   font-weight: 700;
@@ -186,7 +208,10 @@
   margin: 6px 0;
 }
 
-.wallet-panel { margin: 0 0 18px; }
+.wallet-panel {
+  margin: 0 0 18px;
+}
+
 .wallet-panel h2 {
   font-family: var(--display);
   font-weight: 700;
@@ -197,15 +222,20 @@
 }
 
 /* =========================================================
-   FORM (.lp-form के fields auth.css से आते हैं)
+   FORM
+   Form fields are styled by auth.css
    ========================================================= */
+
 .lp-form {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 18px;
   margin-top: 22px;
 }
-.lp-form .wide { grid-column: 1 / -1; }
+
+.lp-form .wide {
+  grid-column: 1 / -1;
+}
 
 .reward-preview {
   padding: 15px 17px;
@@ -239,17 +269,25 @@
   border: 1px solid #c6ecdc;
   color: var(--green-700);
 }
+
 .form-message.error {
   background: #fff1f1;
   border-color: #f6caca;
   color: #b42323;
 }
-.form-message:empty { display: none; }
+
+.form-message:empty {
+  display: none;
+}
 
 /* =========================================================
    RECORDS
    ========================================================= */
-.records { display: grid; gap: 14px; }
+
+.records {
+  display: grid;
+  gap: 14px;
+}
 
 .record-card {
   border: 1px solid var(--line);
@@ -261,21 +299,37 @@
   background: #fff;
   transition: border-color .25s var(--ease), box-shadow .25s var(--ease), transform .25s var(--ease);
 }
+
 .record-card:hover {
   border-color: #cfe9de;
   box-shadow: var(--shadow-sm);
   transform: translateY(-1px);
 }
+
 .record-top {
   display: flex;
   justify-content: space-between;
   gap: 12px;
   align-items: center;
 }
-.record-card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.65; }
-.record-card strong { font-size: 14px; color: var(--navy); font-weight: 700; }
 
-/* Status tags */
+.record-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.record-card strong {
+  font-size: 14px;
+  color: var(--navy);
+  font-weight: 700;
+}
+
+/* =========================================================
+   STATUS TAGS
+   ========================================================= */
+
 .tag {
   display: inline-flex;
   align-items: center;
@@ -288,16 +342,29 @@
   text-transform: capitalize;
   white-space: nowrap;
 }
-.tag.pending { background: #fff4dc; color: #8b6210; }
+
+.tag.pending {
+  background: #fff4dc;
+  color: #8b6210;
+}
+
 .tag.approved,
 .tag.unlocked,
-.tag.paid { background: #e3f8ef; color: var(--green-700); }
+.tag.paid {
+  background: #e3f8ef;
+  color: var(--green-700);
+}
+
 .tag.rejected,
-.tag.forfeited { background: #fde9e9; color: #b42323; }
+.tag.forfeited {
+  background: #fde9e9;
+  color: #b42323;
+}
 
 /* =========================================================
    ADMIN ACTIONS
    ========================================================= */
+
 .admin-actions {
   display: flex;
   gap: 8px;
@@ -305,6 +372,7 @@
   align-items: center;
   margin-top: 6px;
 }
+
 .admin-actions input {
   max-width: 130px;
   border: 1px solid #d8e1ea;
@@ -316,6 +384,7 @@
   outline: none;
   transition: border-color .2s, box-shadow .2s;
 }
+
 .admin-actions input:focus {
   border-color: var(--green-600);
   box-shadow: 0 0 0 3px rgba(31, 169, 127, .16);
@@ -330,21 +399,165 @@
   cursor: pointer;
   transition: transform .2s var(--ease), background .2s, box-shadow .2s;
 }
-.btn-small:hover { transform: translateY(-1px); }
-.btn-small:active { transform: translateY(0); }
-.btn-small:disabled { opacity: .5; cursor: not-allowed; transform: none; }
 
-.btn-approve { background: #dff7eb; color: #08764e; }
-.btn-approve:hover { background: #c9f0de; }
-.btn-reject { background: #fee8e8; color: #a51f1f; }
-.btn-reject:hover { background: #fbd5d5; }
-.btn-neutral { background: #eaf0f6; color: #31445c; }
-.btn-neutral:hover { background: #dce6f0; }
+.btn-small:hover {
+  transform: translateY(-1px);
+}
+
+.btn-small:active {
+  transform: translateY(0);
+}
+
+.btn-small:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-approve {
+  background: #dff7eb;
+  color: #08764e;
+}
+
+.btn-approve:hover {
+  background: #c9f0de;
+}
+
+.btn-reject {
+  background: #fee8e8;
+  color: #a51f1f;
+}
+
+.btn-reject:hover {
+  background: #fbd5d5;
+}
+
+.btn-neutral {
+  background: #eaf0f6;
+  color: #31445c;
+}
+
+.btn-neutral:hover {
+  background: #dce6f0;
+}
+
+/* =========================================================
+   ADMIN PANEL — ADDITIONAL LAYOUT
+   ========================================================= */
+
+.admin-intro,
+.admin-section {
+  scroll-margin-top: 90px;
+}
+
+.admin-intro .panel-heading,
+.admin-section .panel-heading {
+  align-items: center;
+}
+
+.admin-intro .button,
+.admin-section .button {
+  min-height: 42px;
+}
+
+.admin-note {
+  padding: 15px 18px;
+  margin: 18px 0 22px;
+  border: 1px solid #d9e5f0;
+  border-left: 4px solid #1fa97f;
+  border-radius: 12px;
+  background: #f7fafc;
+  color: #40536b;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.admin-note strong {
+  color: var(--navy);
+}
+
+.admin-empty {
+  padding: 24px 18px;
+  border: 1px dashed #cbd6e2;
+  border-radius: 13px;
+  background: #fbfcfe;
+  color: var(--muted);
+  text-align: center;
+  font-size: 14px;
+}
+
+.admin-section .records {
+  min-width: 0;
+}
+
+.admin-section .record-card {
+  gap: 11px;
+  padding: 20px;
+}
+
+.admin-section .record-top {
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.admin-section .record-card a {
+  color: var(--green-700);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+
+.admin-section .record-card a:hover {
+  color: var(--navy);
+}
+
+.admin-section .record-card p {
+  overflow-wrap: anywhere;
+}
+
+.admin-actions {
+  gap: 10px;
+}
+
+.admin-actions input {
+  width: min(100%, 420px);
+  max-width: 420px;
+  min-height: 40px;
+  flex: 1 1 260px;
+  box-sizing: border-box;
+}
+
+.admin-actions .btn-small {
+  min-height: 38px;
+}
+
+.tag.locked {
+  background: #fff4dc;
+  color: #8b6210;
+}
+
+.tag.processing {
+  background: #eaf0f6;
+  color: #31445c;
+}
+
+#adminIdentity {
+  overflow-wrap: anywhere;
+}
+
+#refreshBtn:disabled {
+  opacity: .6;
+  cursor: wait;
+}
 
 /* =========================================================
    UTILITIES & ACCESSIBILITY
    ========================================================= */
-[hidden] { display: none !important; }
+
+[hidden] {
+  display: none !important;
+}
 
 .dash-header nav > a:focus-visible,
 .btn-small:focus-visible {
@@ -356,27 +569,97 @@
 /* =========================================================
    RESPONSIVE
    ========================================================= */
+
 @media (max-width: 900px) {
-  .metric-grid { grid-template-columns: repeat(2, 1fr); }
+  .metric-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 700px) {
-  .dash-title { align-items: flex-start; flex-direction: column; gap: 10px; }
-  .dash-title h1 { font-size: 29px; }
-  .metric-grid { grid-template-columns: 1fr; gap: 14px; }
-  .lp-form { grid-template-columns: 1fr; }
-  .lp-form .wide { grid-column: auto; }
-  .dash-header { padding: 0 14px; height: 64px; }
-  .dash-header nav { gap: 8px; }
-  .dash-header nav > a { display: none; }
-  .metric-card, .dash-panel { padding: 20px 18px; }
-  .record-card { padding: 16px; }
-  .panel-heading { flex-wrap: wrap; }
-  .admin-actions input { max-width: 100%; flex: 1 1 100%; }
+  .dash-title {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .dash-title h1 {
+    font-size: 29px;
+  }
+
+  .metric-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .lp-form {
+    grid-template-columns: 1fr;
+  }
+
+  .lp-form .wide {
+    grid-column: auto;
+  }
+
+  .dash-header {
+    padding: 0 14px;
+    height: 64px;
+  }
+
+  .dash-header nav {
+    gap: 8px;
+  }
+
+  .dash-header nav > a {
+    display: none;
+  }
+
+  .metric-card,
+  .dash-panel {
+    padding: 20px 18px;
+  }
+
+  .record-card {
+    padding: 16px;
+  }
+
+  .panel-heading {
+    flex-wrap: wrap;
+  }
+
+  .admin-note {
+    padding: 13px 14px;
+  }
+
+  .admin-section .record-card {
+    padding: 16px;
+  }
+
+  .admin-section .record-top {
+    align-items: flex-start;
+  }
+
+  .admin-actions {
+    align-items: stretch;
+  }
+
+  .admin-actions input,
+  .admin-actions .btn-small {
+    width: 100%;
+    max-width: 100%;
+    flex: 1 1 100%;
+  }
+
+  #refreshBtn {
+    width: 100%;
+  }
 }
 
+/* Reduced motion accessibility */
+
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: .01ms !important;
     transition-duration: .01ms !important;
   }
