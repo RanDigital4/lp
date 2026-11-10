@@ -1,1 +1,169 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin Review | RND LP</title><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="dashboard.css"></head><body class="dash-body"><header class="dash-header"><a class="brand" href="index.html"><span class="brand-mark">R</span><span>RAN<span class="brand-light">DIGITAL</span></span></a><nav><a href="dashboard.html">Dashboard</a><button id="logoutBtn" class="button button-quiet">Logout</button></nav></header><main class="dash-wrap"><div class="dash-title"><div><p class="eyebrow">AUTHORIZED REVIEW</p><h1>LP Admin Panel</h1><p class="muted" id="adminIdentity">Checking administrator…</p></div><span class="status-pill">Admin</span></div><div class="notice-box">Only approve a position after independently checking its DEX pool, wallet, transaction/position ID, current value and continuing status. Approval starts the six-month clock.</div><section class="dash-panel"><div class="panel-heading"><div><p class="eyebrow">APPLICATION QUEUE</p><h2>Submissions</h2></div><button class="button button-quiet" id="refreshBtn">Refresh</button></div><div id="adminQueue" class="records">Loading…</div></section><section class="dash-panel"><div class="panel-heading"><div><p class="eyebrow">WITHDRAWALS</p><h2>Withdrawal requests</h2></div></div><div id="adminWithdrawals" class="records">Loading…</div></section></main><script type="module" src="admin.js"></script></body></html>
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#091426">
+  <title>LP Admin Panel | RAN DIGITAL</title>
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="auth.css">
+  <link rel="stylesheet" href="dashboard.css">
+
+  <style>
+    .admin-intro {
+      margin-bottom: 24px;
+    }
+
+    .admin-section {
+      margin-top: 24px;
+    }
+
+    .admin-section h2 {
+      margin-bottom: 8px;
+    }
+
+    .admin-note {
+      padding: 14px 16px;
+      border: 1px solid #d8e5f0;
+      border-radius: 12px;
+      background: #f5f8fc;
+      color: #40536b;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 18px 0;
+    }
+
+    .admin-actions input {
+      max-width: 360px;
+      width: 100%;
+    }
+
+    .admin-empty {
+      padding: 22px;
+      border: 1px dashed #ccd7e3;
+      border-radius: 12px;
+      color: #68788d;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body class="dash-body">
+
+  <header class="dash-header">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">R</span>
+      <span>RAN<span class="brand-light">DIGITAL</span></span>
+    </a>
+
+    <nav>
+      <a href="index.html">Website</a>
+      <a href="dashboard.html">Member Dashboard</a>
+      <button
+        id="logoutBtn"
+        class="button button-quiet"
+        type="button">
+        Logout
+      </button>
+    </nav>
+  </header>
+
+  <main class="dash-wrap">
+
+    <div class="dash-title">
+      <div>
+        <p class="eyebrow">RND LP PROGRAM</p>
+        <h1>Admin Control Panel</h1>
+        <p class="muted" id="adminIdentity">
+          Checking administrator account…
+        </p>
+      </div>
+
+      <span class="status-pill">
+        Admin Area
+      </span>
+    </div>
+
+    <div class="admin-note">
+      <strong>Important:</strong>
+      Every LP application must be independently checked on
+      BNB Smart Chain before approval. A transaction hash format
+      alone does not prove that liquidity was added.
+      Never approve an unverified application.
+    </div>
+
+    <section class="dash-panel admin-intro">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">CONTROL CENTER</p>
+          <h2>LP Program Management</h2>
+        </div>
+
+        <button
+          id="refreshBtn"
+          class="button button-primary"
+          type="button">
+          Refresh Data
+        </button>
+      </div>
+
+      <p class="muted">
+        Review applications, verify liquidity positions,
+        approve or reject rewards, manage six-month locks,
+        and record actual RND withdrawals.
+      </p>
+    </section>
+
+    <section class="dash-panel admin-section">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">USER APPLICATIONS</p>
+          <h2>LP Verification Queue</h2>
+        </div>
+      </div>
+
+      <p class="muted">
+        Check the submitted transaction, wallet, DEX,
+        pool and actual LP position before taking action.
+      </p>
+
+      <div id="adminQueue" class="records">
+        <div class="admin-empty">
+          Loading LP applications…
+        </div>
+      </div>
+    </section>
+
+    <section class="dash-panel admin-section">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">MANUAL PAYMENTS</p>
+          <h2>Withdrawal Requests</h2>
+        </div>
+      </div>
+
+      <p class="muted">
+        Send the actual RND tokens manually from the authorized
+        wallet. Only after the transfer is completed, enter its
+        BNB Smart Chain transaction hash and confirm payment.
+      </p>
+
+      <div id="adminWithdrawals" class="records">
+        <div class="admin-empty">
+          Loading withdrawal requests…
+        </div>
+      </div>
+    </section>
+
+    <p class="muted" style="text-align:center;margin-top:28px">
+      RAN DIGITAL · LP Program Administration
+    </p>
+
+  </main>
+
+  <script type="module" src="admin.js"></script>
+
+</body>
+</html>
