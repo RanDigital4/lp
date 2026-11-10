@@ -1,7 +1,7 @@
 
 export const APP_CONFIG = {
   // Admin का वही ईमेल डालें जिससे आप Admin Panel में लॉगिन करते हैं।
-  adminEmail: "YOUR_ADMIN_EMAIL@example.com",
+  adminEmail: "randigital4@gmail.com",
 
   // RND Token का नेटवर्क
   networkName: "BNB Smart Chain",
