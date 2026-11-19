@@ -105,17 +105,8 @@ async function loadStats() {
 }
 async function loadBalances() {
   if (!user) return;
-  const [bnb, u, r, lp] = await Promise.all([ro.getBalance(user), R.usdt.balanceOf(user), R.rnd.balanceOf(user), R.pair.balanceOf(user)]);
+  const [u, r, lp] = await Promise.all([R.usdt.balanceOf(user), R.rnd.balanceOf(user), R.pair.balanceOf(user)]);
   W.bal = { u, r, lp };
-  let rndUsd = null;
-  try { await loadPool(); rndUsd = Number(ethers.formatUnits(pool.ru, dec.u)) / Number(ethers.formatUnits(pool.rr, dec.r)); } catch (e) { console.warn(e); }
-  const uN = Number(ethers.formatUnits(u, dec.u)), rN = Number(ethers.formatUnits(r, dec.r));
-  $('balBNB').textContent = fu(bnb, 18, 5); $('balUSDT').textContent = fmt(uN, 4); $('balRND').textContent = fmt(rN, 4); $('balLP').textContent = fu(lp, 18, 8);
-  $('balUSDTusd').textContent = '≈ $' + fmt(uN, 2);
-  $('balRNDusd').textContent = rndUsd ? '≈ $' + fmt(rN * rndUsd, 2) : '';
-  $('rndPx').textContent = rndUsd ? '1 RND ≈ $' + fmt(rndUsd, 6) : 'Pool price';
-  $('balTotal').textContent = rndUsd ? '$' + fmt(uN + rN * rndUsd, 2) : '$' + fmt(uN, 2);
-  $('gasWarn').classList.toggle('hidden', bnb >= ethers.parseEther('0.003'));
 }
 async function refresh() {
   need();
@@ -218,6 +209,7 @@ act('preview', preview); act('approveLP', approveLP); act('lockLP', lockLP); act
 $('usdtAmount').addEventListener('input', () => { clearTimeout(quoteTimer); quoteTimer = setTimeout(updateQuote, 300); });
 $('maxUsdt').onclick = () => { if (!W.bal) return toast('पहले Wallet Connect करें।', true); $('usdtAmount').value = ethers.formatUnits(W.bal.u, dec.u); updateQuote(); };
 $('maxLp').onclick = () => { if (!W.bal) return toast('पहले Wallet Connect करें।', true); $('lpAmount').value = ethers.formatUnits(W.bal.lp, 18); };
+$('share').onclick = async () => { const d = { title: 'RND LP Rewards', text: 'RND/USDT LP लगाइए, 180 दिन lock करके RND reward और PancakeSwap trading fees पाइए।', url: location.href }; try { if (navigator.share) await navigator.share(d); else { await navigator.clipboard.writeText(d.url); toast('Link copy हो गया। अब दूसरों को भेजें।'); } } catch {} };
 $('copyAddr').onclick = () => navigator.clipboard?.writeText(user).then(() => toast('Address copy हो गया।'));
 $('positions').addEventListener('click', e => {
   const b = e.target.closest('button[data-a]'); if (!b || b.disabled) return;
