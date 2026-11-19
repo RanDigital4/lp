@@ -1,9 +1,118 @@
-<!doctype html><html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#101827"><title>RND LP Rewards</title><link rel="stylesheet" href="styles.css"><script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script></head><body>
-<header class="topbar"><a class="brand" href="#"><span class="mark">R</span> RND <b>LP REWARDS</b></a><div class="actions"><span id="network" class="pill">BSC Mainnet</span><button id="connect" class="btn primary">Connect Wallet</button></div></header>
-<main><section class="hero"><div><div class="eyebrow">RAN DIGITAL • BNB SMART CHAIN</div><h1>Provide Liquidity.<br><em>Lock for 180 Days.</em></h1><p>RND / USDT PancakeSwap V2 LP को अपने वॉलेट से जोड़ें, मूल्य देखें और स्मार्ट कॉन्ट्रैक्ट में लॉक करें।</p><a class="btn primary" href="#add">Add Liquidity & Lock</a> <a class="btn ghost" target="_blank" href="https://bscscan.com/address/0xE930dca16D6ce36D3666AC48DD51db5AAd713590#code">View Contract</a><p id="walletText" class="muted">Wallet connect नहीं है</p></div><aside class="hero-card"><div class="eyebrow">REWARD RATE</div><strong>20 <small>RND</small></strong><p>हर पूरे $100 eligible LP value पर</p><hr><p>Lock period <b>180 days</b></p><p>Minimum sides <b>$50 + $50</b></p><p>Network <b>BNB Smart Chain</b></p></aside></section>
-<section class="stats"><div><small>Total LP Locked</small><b id="total">—</b></div><div><small>Next Lock ID</small><b id="next">—</b></div><div><small>Oracle Observations</small><b id="obs">— / 24</b></div><div><small>Contract Owner</small><b id="owner">—</b></div></section>
-<section id="add" class="section"><div class="heading"><div><div class="eyebrow">STEP 1</div><h2>Add RND / USDT Liquidity</h2></div><a target="_blank" rel="noopener" href="https://pancakeswap.finance/v2/add/0x55d398326f99059fF775485246999027B3197955/0xcF1FbF18bE9202865bcf88E6349B9D207F75942d?chain=bsc&persistChain=1">Open PancakeSwap V2 (USDT/RND)</a></div><div class="notice">RND और USDT आपके wallet में होने चाहिए। यह पेज PancakeSwap V2 Router के जरिए Liquidity जोड़ता है। USDT डालने पर RND मात्रा मौजूदा V2 Pool reserves के अनुपात से अपने-आप निकलेगी। Amount और slippage जाँचकर ही wallet transaction confirm करें।</div><div class="cols"><div class="panel"><label>USDT Amount</label><input id="usdtAmount" type="number" min="0" step="any" placeholder="उदाहरण: 50"><label>RND Amount <span class="muted">(Pool price के अनुसार अपने-आप)</span></label><input id="rndAmount" type="number" min="0" step="any" placeholder="USDT amount डालें" readonly><p id="quoteStatus" class="hint">Wallet connect होने पर V2 Pool से live ratio लिया जाएगा।</p><label>Slippage</label><select id="slippage"><option value="50">0.5%</option><option value="100" selected>1%</option><option value="200">2%</option></select><button id="addLiquidity" class="btn primary full">Approve & Add Liquidity</button><p class="hint">Token approvals और liquidity transaction अलग-अलग wallet confirmations माँग सकते हैं।</p></div><div class="panel"><h3>LP Details</h3><p>LP Pair <b>RND / USDT V2</b></p><p>Live Pool Price <b id="poolPrice">—</b></p><p>Wallet LP balance <b id="lpBalance">—</b></p><p>Pair <code>0xd6f291…c20e9991</code></p><p>Locker <code>0xE930…Ad713590</code></p><a class="btn ghost full" target="_blank" href="https://bscscan.com/address/0xd6f291a4dbefa0ff99b07d247aa73ff7c20e9991">View LP Pair</a></div></div></section>
-<section class="section"><div class="heading"><div><div class="eyebrow">STEP 2</div><h2>Preview & Lock LP</h2></div></div><div class="cols"><div class="panel"><label>LP Token Amount</label><input id="lpAmount" type="number" min="0" step="any" placeholder="LP amount"><button id="preview" class="btn secondary full">Preview LP Value & Reward</button><div id="previewResult" class="result">Preview देखने के लिए LP amount डालें।</div><button id="approveLP" class="btn secondary full">Approve LP for Locker</button><button id="lockLP" class="btn primary full">Lock LP for 180 Days</button></div><div class="panel"><h3>TWAP Price Oracle</h3><p>Observation count <b id="oracleCount">— / 24</b></p><button id="updateOracle" class="btn secondary full">Update Price Observation</button><p class="hint">TWAP के लिए कम-से-कम 30 मिनट पुरानी और अधिकतम 2 घंटे पुरानी observation चाहिए। हर update on-chain transaction है और gas लगेगा। नए deployment पर पहले पर्याप्त observations बनने दें।</p></div></div></section>
-<section class="section"><div class="heading"><div><div class="eyebrow">STEP 3</div><h2>My LP Locks</h2></div><button id="refresh" class="btn ghost">Refresh</button></div><div id="positions" class="positions"><div class="empty">Wallet connect करके positions देखें।</div></div></section>
-<section id="admin" class="section hidden"><div class="eyebrow">OWNER ONLY</div><h2>Reward Payment Admin</h2><div class="notice warning">पहले यूजर को RND manually भेजें। फिर उसी transfer का transaction hash यहाँ दर्ज करें। markRewardPaid केवल payment record करता है, RND transfer नहीं करता।</div><div class="panel"><label>Lock ID</label><input id="adminId" type="number" min="1"><label>Reward payment transaction hash</label><input id="paymentHash" placeholder="0x + 64 hex characters"><button id="markPaid" class="btn primary">Mark Reward as Paid</button></div></section>
-<section class="section faq"><h2>Important Information</h2><ul><li>हर पूरे $100 eligible LP value पर 20 RND; कम-से-कम $50 USDT side और $50 RND side जरूरी हैं।</li><li>Reward का भुगतान deployed contract में manual owner process है; automatic RND payout नहीं है।</li><li>180 दिन बाद LP release और reward payment अलग actions हैं।</li><li>पहले बहुत छोटी रकम से test करें। Contract source स्वयं कहता है कि यह audited production release नहीं है।</li></ul></section></main><footer>© Ran Digital • <a target="_blank" href="https://bscscan.com/address/0xE930dca16D6ce36D3666AC48DD51db5AAd713590">Contract on BscScan</a></footer><div id="toast" class="toast"></div><script src="app.js"></script></body></html>
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0d1613">
+<title>RND LP Rewards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="#top"><span class="logo">R</span>RND <span class="soft">LP Rewards</span></a>
+  <nav class="nav"><a href="#add">Liquidity जोड़ें</a><a href="#lock">Lock करें</a><a href="#positions">मेरे Locks</a><a href="#faq">जानकारी</a></nav>
+  <div class="right"><span id="netPill" class="chip"><i class="dot"></i><span>BSC Mainnet</span></span><button id="connect" class="btn gold">Wallet Connect करें</button></div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="hero-copy">
+    <h1>अपनी Liquidity 180 दिन लॉक करें और हर $100 पर 20 RND पाएँ।</h1>
+    <p class="lead">PancakeSwap V2 का RND / USDT LP सीधे अपने wallet से जोड़ें, उसकी value देखें और smart contract में सुरक्षित lock करें।</p>
+    <div class="cta"><a class="btn gold" href="#add">Liquidity जोड़ें</a><a class="btn line" target="_blank" rel="noopener" href="https://bscscan.com/address/0xE930dca16D6ce36D3666AC48DD51db5AAd713590#code">Contract देखें</a></div>
+    <dl class="facts">
+      <div><dt>Reward</dt><dd>20 RND / $100</dd></div>
+      <div><dt>Lock अवधि</dt><dd>180 दिन</dd></div>
+      <div><dt>न्यूनतम</dt><dd>$50 + $50</dd></div>
+    </dl>
+  </div>
+
+  <aside class="ledger" aria-label="Wallet balance">
+    <div class="ledger-head"><div><span class="label">आपका Wallet</span><b id="walletAddr" class="addr">Connect नहीं है</b></div><button id="copyAddr" class="icon hidden" title="Address copy करें">⧉</button></div>
+    <div class="ledger-total"><span class="label">अनुमानित कुल value</span><b id="balTotal">—</b></div>
+    <ul class="bal">
+      <li><span class="coin bnb">B</span><div><b>BNB</b><small>Gas के लिए</small></div><div class="amt"><b id="balBNB">—</b></div></li>
+      <li><span class="coin usdt">$</span><div><b>USDT</b><small>BEP-20</small></div><div class="amt"><b id="balUSDT">—</b><small id="balUSDTusd"></small></div></li>
+      <li><span class="coin rnd">R</span><div><b>RND</b><small id="rndPx">Pool price</small></div><div class="amt"><b id="balRND">—</b><small id="balRNDusd"></small></div></li>
+      <li><span class="coin lp">LP</span><div><b>RND/USDT LP</b><small>अभी lock करने लायक</small></div><div class="amt"><b id="balLP">—</b></div></li>
+    </ul>
+    <p id="gasWarn" class="warn hidden">BNB बहुत कम है। Transaction के लिए थोड़ा BNB रखें।</p>
+  </aside>
+</section>
+
+<section class="stats">
+  <div><span class="label">कुल LP Locked</span><b id="total">—</b></div>
+  <div><span class="label">अगला Lock ID</span><b id="next">—</b></div>
+  <div><span class="label">Oracle Observations</span><b id="obs">— / 24</b></div>
+  <div><span class="label">Contract Owner</span><b id="owner">—</b></div>
+</section>
+
+<section class="flow">
+  <article id="add" class="step">
+    <header><span class="num">1</span><div><h2>RND / USDT Liquidity जोड़ें</h2><p>USDT डालते ही RND की मात्रा live pool ratio से अपने-आप निकल आती है।</p></div></header>
+    <div class="grid2">
+      <div class="card">
+        <div class="field"><label for="usdtAmount">USDT मात्रा</label><div class="inp"><input id="usdtAmount" inputmode="decimal" autocomplete="off" placeholder="0.0"><button id="maxUsdt" class="max" type="button">Max</button></div></div>
+        <div class="field"><label for="rndAmount">RND मात्रा (अपने-आप)</label><div class="inp"><input id="rndAmount" readonly placeholder="0.0"></div></div>
+        <div class="field"><label for="slippage">Slippage</label><select id="slippage"><option value="50">0.5%</option><option value="100" selected>1%</option><option value="200">2%</option></select></div>
+        <p id="quoteStatus" class="hint">USDT मात्रा डालें।</p>
+        <button id="addLiquidity" class="btn gold full">Approve करें और Liquidity जोड़ें</button>
+        <p class="hint">Approvals और liquidity के लिए wallet में अलग-अलग confirmations आ सकते हैं।</p>
+      </div>
+      <div class="card info">
+        <h3>Pool की जानकारी</h3>
+        <dl><div><dt>Live price</dt><dd id="poolPrice">—</dd></div><div><dt>Pair</dt><dd><a target="_blank" rel="noopener" href="https://bscscan.com/address/0xd6f291a4dbefa0ff99b07d247aa73ff7c20e9991">0xd6f2…e9991</a></dd></div><div><dt>Locker</dt><dd><a target="_blank" rel="noopener" href="https://bscscan.com/address/0xE930dca16D6ce36D3666AC48DD51db5AAd713590">0xE930…3590</a></dd></div></dl>
+        <a class="btn line full" target="_blank" rel="noopener" href="https://pancakeswap.finance/v2/add/0x55d398326f99059fF775485246999027B3197955/0xcF1FbF18bE9202865bcf88E6349B9D207F75942d?chain=bsc&persistChain=1">PancakeSwap पर जोड़ें</a>
+      </div>
+    </div>
+  </article>
+
+  <article id="lock" class="step">
+    <header><span class="num">2</span><div><h2>LP देखें और Lock करें</h2><p>Preview से अपना reward पहले ही जान लें, फिर approve और lock करें।</p></div></header>
+    <div class="grid2">
+      <div class="card">
+        <div class="field"><label for="lpAmount">LP Token मात्रा</label><div class="inp"><input id="lpAmount" inputmode="decimal" autocomplete="off" placeholder="0.0"><button id="maxLp" class="max" type="button">Max</button></div></div>
+        <button id="preview" class="btn soft full">Value और Reward देखें</button>
+        <div id="previewResult" class="result">LP मात्रा डालकर Preview देखें।</div>
+        <div class="two"><button id="approveLP" class="btn soft">LP Approve करें</button><button id="lockLP" class="btn gold">180 दिन Lock करें</button></div>
+      </div>
+      <div class="card info">
+        <h3>TWAP Price Oracle</h3>
+        <dl><div><dt>Observations</dt><dd id="oracleCount">— / 24</dd></div></dl>
+        <button id="updateOracle" class="btn soft full">Observation Update करें</button>
+        <p class="hint">TWAP के लिए 30 मिनट से 2 घंटे पुरानी observation चाहिए। हर update एक on-chain transaction है और gas लगता है।</p>
+      </div>
+    </div>
+  </article>
+
+  <article id="positions-wrap" class="step">
+    <header><span class="num">3</span><div><h2 id="positions-h">मेरे LP Locks</h2><p>Unlock के बाद reward request करें और LP वापस लें।</p></div><button id="refresh" class="btn line sm">Refresh</button></header>
+    <div id="positions" class="positions"><div class="empty">Wallet connect करके अपने locks देखें।</div></div>
+  </article>
+</section>
+
+<section id="admin" class="step admin hidden">
+  <header><span class="num">★</span><div><h2>Owner: Reward Payment</h2><p>पहले user को RND manually भेजें, फिर उसी transfer का hash यहाँ दर्ज करें। यह सिर्फ payment record करता है, RND भेजता नहीं।</p></div></header>
+  <div class="card"><div class="grid2"><div class="field"><label for="adminId">Lock ID</label><div class="inp"><input id="adminId" inputmode="numeric" placeholder="1"></div></div><div class="field"><label for="paymentHash">Payment transaction hash</label><div class="inp"><input id="paymentHash" placeholder="0x + 64 hex"></div></div></div><button id="markPaid" class="btn gold">Reward Paid दर्ज करें</button></div>
+</section>
+
+<section id="faq" class="faq">
+  <h2>ज़रूरी जानकारी</h2>
+  <ul>
+    <li>हर पूरे $100 eligible LP value पर 20 RND मिलते हैं। कम-से-कम $50 USDT side और $50 RND side ज़रूरी है।</li>
+    <li>Reward का भुगतान owner manually करता है; automatic payout नहीं है।</li>
+    <li>180 दिन बाद LP release और reward payment अलग actions हैं।</li>
+    <li>पहले बहुत छोटी रकम से test करें। Contract source खुद कहता है कि यह audited production release नहीं है।</li>
+  </ul>
+</section>
+</main>
+
+<footer><span>© Ran Digital</span><a target="_blank" rel="noopener" href="https://bscscan.com/address/0xE930dca16D6ce36D3666AC48DD51db5AAd713590">BscScan पर Contract</a></footer>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script src="app.js"></script>
+</body>
+</html>
