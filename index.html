@@ -24,6 +24,7 @@
     <h1>अपनी Liquidity 180 दिन लॉक करें और हर $100 पर 20 RND पाएँ।</h1>
     <p class="lead">PancakeSwap V2 का RND / USDT LP सीधे अपने wallet से जोड़ें, उसकी value देखें और smart contract में सुरक्षित lock करें।</p>
     <div class="cta"><a class="btn gold" href="#add">Liquidity जोड़ें</a><a class="btn line" target="_blank" rel="noopener" href="https://bscscan.com/address/0xE930dca16D6ce36D3666AC48DD51db5AAd713590#code">Contract देखें</a></div>
+    <div id="walletStrip" class="wstrip"><span class="label">आपका Wallet Address</span><div class="wrow"><b id="walletAddr" class="addr">Connect नहीं है</b><button id="copyAddr" class="icon hidden" title="Address copy करें" type="button">⧉</button></div></div>
     <dl class="facts">
       <div><dt>Reward</dt><dd>20 RND / $100</dd></div>
       <div><dt>Lock अवधि</dt><dd>180 दिन</dd></div>
@@ -31,16 +32,11 @@
     </dl>
   </div>
 
-  <aside class="ledger" aria-label="Wallet balance">
-    <div class="ledger-head"><div><span class="label">आपका Wallet</span><b id="walletAddr" class="addr">Connect नहीं है</b></div><button id="copyAddr" class="icon hidden" title="Address copy करें">⧉</button></div>
-    <div class="ledger-total"><span class="label">अनुमानित कुल value</span><b id="balTotal">—</b></div>
-    <ul class="bal">
-      <li><span class="coin bnb">B</span><div><b>BNB</b><small>Gas के लिए</small></div><div class="amt"><b id="balBNB">—</b></div></li>
-      <li><span class="coin usdt">$</span><div><b>USDT</b><small>BEP-20</small></div><div class="amt"><b id="balUSDT">—</b><small id="balUSDTusd"></small></div></li>
-      <li><span class="coin rnd">R</span><div><b>RND</b><small id="rndPx">Pool price</small></div><div class="amt"><b id="balRND">—</b><small id="balRNDusd"></small></div></li>
-      <li><span class="coin lp">LP</span><div><b>RND/USDT LP</b><small>अभी lock करने लायक</small></div><div class="amt"><b id="balLP">—</b></div></li>
-    </ul>
-    <p id="gasWarn" class="warn hidden">BNB बहुत कम है। Transaction के लिए थोड़ा BNB रखें।</p>
+  <aside class="perks" aria-label="फायदे">
+    <div class="perk"><span class="pi">20</span><div><b>20 RND हर $100 पर</b><p>180 दिन LP lock करने पर eligible value के हिसाब से reward।</p></div></div>
+    <div class="perk"><span class="pi">%</span><div><b>Trading Fees भी मिलेंगी</b><p>LP लगाने पर PancakeSwap की trading के अनुसार आपको fees भी मिलती रहती हैं।</p></div></div>
+    <div class="perk"><span class="pi">+</span><div><b>साथ मिलकर Token बढ़ाएँ</b><p>दूसरों को बताइए और उन्हें भी LP में हिस्सेदारी लगवाइए। जितनी liquidity, उतना मज़बूत RND।</p></div></div>
+    <button id="share" class="btn line full" type="button">दूसरों के साथ Share करें</button>
   </aside>
 </section>
 
@@ -101,13 +97,8 @@
 </section>
 
 <section id="faq" class="faq">
-  <h2>ज़रूरी जानकारी</h2>
-  <ul>
-    <li>हर पूरे $100 eligible LP value पर 20 RND मिलते हैं। कम-से-कम $50 USDT side और $50 RND side ज़रूरी है।</li>
-    <li>Reward का भुगतान owner manually करता है; automatic payout नहीं है।</li>
-    <li>180 दिन बाद LP release और reward payment अलग actions हैं।</li>
-    <li>पहले बहुत छोटी रकम से test करें। Contract source खुद कहता है कि यह audited production release नहीं है।</li>
-  </ul>
+  <h2>जानकारी</h2>
+  <ul><li>हर पूरे $100 eligible LP value पर 20 RND मिलते हैं। कम-से-कम $50 USDT side और $50 RND side ज़रूरी है।</li></ul>
 </section>
 </main>
 
