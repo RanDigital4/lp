@@ -29,19 +29,6 @@ h1{font:800 clamp(32px,4.6vw,56px)/1.12 var(--d);letter-spacing:-.02em;margin:0 
 .facts{display:flex;gap:34px;margin:0;flex-wrap:wrap;padding-top:22px;border-top:1px solid var(--line)}
 .facts dt{font-size:12.5px;color:var(--mute)}.facts dd{margin:2px 0 0;font:700 19px var(--d)}
 
-.ledger{background:linear-gradient(160deg,var(--card2),var(--card));border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:0 24px 60px -30px #000}
-.ledger-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
-.addr{font:600 15px var(--b);word-break:break-all}
-.ledger-total{margin:20px 0 14px;padding:16px 0;border-block:1px dashed var(--line)}
-.ledger-total b{font:800 38px/1.1 var(--d);letter-spacing:-.02em}
-.bal{list-style:none;margin:0;padding:0;display:grid;gap:4px}
-.bal li{display:grid;grid-template-columns:40px 1fr auto;gap:12px;align-items:center;padding:10px 4px;border-radius:12px}
-.bal li+li{border-top:1px solid #1f322b}
-.bal b{font-weight:600}.bal small{display:block;color:var(--mute);font-size:12px}
-.amt{text-align:right}.amt b{font-size:16px}
-.coin{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;font:800 14px var(--d);color:#101010}
-.bnb{background:#f3ba2f}.usdt{background:#26a17b;color:#fff}.rnd{background:var(--mint)}.lp{background:#8fb6ff;font-size:12px}
-.warn{margin:12px 0 0;padding:10px 12px;border-radius:10px;background:#3a2b12;color:#f4d089;font-size:13px}
 
 .stats{display:grid;grid-template-columns:repeat(4,1fr);max-width:1280px;margin:20px auto 0;padding:0 5vw;gap:0}
 .stats>div{padding:18px 20px;border:1px solid var(--line);border-right:0;background:var(--bg2)}
@@ -85,5 +72,18 @@ footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;paddin
 .toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}.toast.error{background:#ffe3e3;color:#611616}.toast a{color:inherit;text-decoration:underline;margin-left:8px}
 
 @media(max-width:900px){.hero{grid-template-columns:1fr;padding-top:40px;gap:32px}.nav{display:none}.grid2{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr;gap:10px}.stats>div,.stats>div:first-child,.stats>div:last-child{border:1px solid var(--line);border-radius:var(--r)}.pg{grid-template-columns:1fr 1fr}}
-@media(max-width:560px){.chip{display:none}.step{padding:20px 16px}.two{grid-template-columns:1fr}.ledger-total b{font-size:32px}}
+@media(max-width:560px){.chip{display:none}.step{padding:20px 16px}.two{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
+
+.top .btn{padding:9px 16px;font-size:13.5px;border-radius:10px;white-space:nowrap}
+.brand{white-space:nowrap;flex:none}
+.wstrip{margin:0 0 26px;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:var(--bg2);max-width:460px}
+.wrow{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.addr{font:600 14px var(--b);overflow-wrap:anywhere}
+.perks{display:grid;gap:12px;padding:20px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(165deg,var(--card2),var(--card));box-shadow:0 24px 60px -34px #000}
+.perk{display:flex;gap:14px;align-items:flex-start;padding:14px;border-radius:14px;background:var(--bg2);border:1px solid #1f322b}
+.perk b{font:700 16px var(--d)}.perk p{margin:3px 0 0;color:var(--mute);font-size:13.5px;line-height:1.55}
+.pi{flex:none;display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:var(--gold);color:#1b1503;font:800 17px var(--d)}
+.faq ul{list-style:none;padding:0}.faq li{padding:16px 18px;border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:12px;background:var(--bg2)}
+@media(max-width:900px){.hero{padding:34px 5vw 20px}.hero-copy{order:1}.perks{order:2}.top{gap:12px;padding:12px 4vw}}
+@media(max-width:560px){h1{font-size:27px;line-height:1.25}.lead{font-size:15px}.brand{font-size:16px}.brand .soft{display:none}.logo{width:30px;height:30px}.top .btn{padding:8px 12px;font-size:13px}.cta .btn{flex:1}.facts{gap:18px}.facts dd{font-size:16px}.stats b{font-size:16px}.stats>div{padding:14px}h2{font-size:20px}.num{width:30px;height:30px;font-size:14px}.step>header{gap:12px}.card{padding:16px}.pg{grid-template-columns:1fr 1fr}.faq{padding-bottom:40px}}
