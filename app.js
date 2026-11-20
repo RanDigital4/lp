@@ -192,9 +192,23 @@ async function addLiquidity() {
   await ensureAllowance(W.usdt, A.router, ua, 'USDT Approve');
   await ensureAllowance(W.rnd, A.router, ra, 'RND Approve');
   const bps = BigInt($('slippage').value), minU = ua * (10000n - bps) / 10000n, minR = ra * (10000n - bps) / 10000n;
-  await send('Liquidity जोड़ना', () => W.router.addLiquidity(A.rnd, A.usdt, ra, ua, minR, minU, user, Math.floor(Date.now() / 1000) + 1200));
+  const tx = await send('Liquidity जोड़ना', () => W.router.addLiquidity(A.rnd, A.usdt, ra, ua, minR, minU, user, Math.floor(Date.now() / 1000) + 1200));
   const minted = (await R.pair.balanceOf(user)) - lpBefore;
-  if (minted > 0n) { $('lpAmount').value = ethers.formatUnits(minted, 18); toast('Liquidity जुड़ गई। नया LP amount Step 2 में भर दिया गया है।'); document.getElementById('lock').scrollIntoView(); }
+  if (minted > 0n) {
+    // Keep a local receipt index so the successful Add Liquidity appears immediately
+    // in Recent LP Activity. The UI also verifies/rebuilds this from Pair mint logs.
+    const key = 'rnd_lp_add_activity_v1_' + user.toLowerCase();
+    let rows = []; try { rows = JSON.parse(localStorage.getItem(key) || '[]'); } catch {}
+    rows = rows.filter(x => x.hash !== tx.hash);
+    rows.unshift({ hash: tx.hash, wallet: user, usdt: ua.toString(), rnd: ra.toString(), lp: minted.toString(), time: Date.now(), source: 'website' });
+    localStorage.setItem(key, JSON.stringify(rows.slice(0, 100)));
+    $('lpAmount').value = ethers.formatUnits(minted, 18);
+    toast('Liquidity जुड़ गई। LP आपके wallet में है; Lock अलग से करना होगा।', false, tx.hash);
+    document.getElementById('lock').scrollIntoView();
+    window.dispatchEvent(new CustomEvent('rnd:lp-added', { detail: { wallet: user, hash: tx.hash } }));
+  } else {
+    toast('Transaction सफल हुआ, लेकिन LP balance में बढ़ोतरी नहीं मिली। BscScan पर जाँचें।', true, tx.hash);
+  }
 }
 function lpAmt() { const v = parseAmt($('lpAmount').value, 18); if (!v) throw Error('सही LP Token मात्रा डालें।'); return v; }
 async function preview() {
