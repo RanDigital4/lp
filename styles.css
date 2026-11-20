@@ -66,3 +66,5 @@ footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;paddin
 @media(max-width:900px){.feats{grid-template-columns:1fr 1fr}.cards{grid-template-columns:1fr 1fr}.grid2,.positions{grid-template-columns:1fr}}
 @media(max-width:560px){.chip,.avatar{display:none}.bt b{font-size:12px}.cards{gap:8px}.stat{padding:12px}.two{grid-template-columns:1fr}.hero{padding-top:28px}.cta .btn{flex:1}.sec{padding-top:26px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
+.wd{margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+.rows .btn{width:100%}
