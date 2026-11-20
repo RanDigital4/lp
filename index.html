@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="styles.css">
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
+<script>window.ethers||document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.4/ethers.umd.min.js"><\/script>')</script>
 </head>
 <body>
 <header class="top">
@@ -112,12 +113,19 @@
       <div class="stat c-gold"><span>Estimated RND reward</span><b id="rwEst">—</b></div>
     </div>
     <div id="rwList" class="rows"><div class="empty">Connect wallet to see reward status.</div></div>
-    <ul class="rules"><li>Every eligible <b>$100</b> of LP value earns <b>20 RND</b> after the 180-day lock.</li><li>Minimum liquidity: <b>$50 USDT + $50 RND</b>.</li><li>Rewards are paid by the owner after you request them; the payment hash is recorded on-chain.</li></ul>
+    <div class="wd"><h3>Reward Withdrawal</h3>
+    <div class="field"><label for="wdLock">Lock चुनें</label><select id="wdLock"><option value="">कोई eligible reward नहीं</option></select></div>
+    <div class="field"><label for="wdAmt">Reward amount (RND) <small>contract के अनुसार fixed</small></label><div class="inp"><input id="wdAmt" readonly placeholder="0.0"></div></div>
+    <div class="field"><label for="wdAddr">Payout address (BSC)</label><div class="inp"><input id="wdAddr" autocomplete="off" placeholder="0x…"><button id="wdSelf" class="max" type="button">My wallet</button></div></div>
+    <button id="wdBtn" class="btn gold full" type="button">REWARD WITHDRAW REQUEST</button>
+    <p id="wdInfo" class="hint">Lock पूरा होने के बाद request on-chain दर्ज होती है; RND का भुगतान admin पैनल से होगा।</p></div>
+  <ul class="rules"><li>Every eligible <b>$100</b> of LP value earns <b>20 RND</b> after the 180-day lock.</li><li>Minimum liquidity: <b>$50 USDT + $50 RND</b>.</li><li>Rewards are paid by the owner after you request them; the payment hash is recorded on-chain.</li></ul>
   </div>
 </section>
 
 <section id="positions-wrap" class="sec">
   <div class="sech"><h2 id="positions-h">MY LP POSITIONS</h2><button id="refresh" class="btn line sm">Refresh</button></div>
+  <p class="sub">180 दिन पूरे होने पर उसी wallet से हर lock के कार्ड में <b>“LP वापस लें”</b> बटन दबाकर अपना LP निकालें।</p>
   <div id="positions" class="positions"><div class="empty">Connect wallet to see your locks.</div></div>
 </section>
 
@@ -154,6 +162,7 @@
 
 <div id="modal" class="modal hidden" role="dialog" aria-modal="true"><div class="glass mbox"><h3>Confirm LP Lock</h3><p>You are locking <b id="mAmt">0</b> LP tokens for <b>180 days</b>.</p><p class="hint">LP cannot be withdrawn until the lock expires. Your wallet will ask for a final confirmation.</p><div class="two"><button id="mNo" class="btn line">Cancel</button><button id="mYes" class="btn gold">Confirm &amp; Lock</button></div></div></div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script src="wallet.js"></script>
 <script src="ui.js"></script>
 <script src="app.js"></script>
 </body>
