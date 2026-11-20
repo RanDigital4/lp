@@ -98,3 +98,9 @@ button, .btn { touch-action: manipulation; }
   .top .btn { padding: 8px; }
   .bnav a { letter-spacing: 0; font-size: 8px; }
 }
+
+/* LP add activity cards */
+.lp-add { border-color: rgba(34,211,238,.32); }
+.lp-add .status { background: rgba(74,222,128,.14); color: var(--ok); }
+.lp-add .pa a { width: 100%; justify-content: center; text-align: center; }
+.lp-add .ag b { overflow-wrap: anywhere; word-break: break-word; }
