@@ -54,7 +54,43 @@ function render(user) {
   put('myDays', next ? Math.ceil((next - now) / 86400) + ' days' : ml.length ? 'Unlocked' : '—');
   put('rwVal', '$' + f(ms('totalUsdValue'))); put('rwEst', f(ms('rewardAmount')) + ' RND');
   $('rwList').innerHTML = mine.length ? mine.map(x => `<div class="row"><span>Lock #${x.id}</span><b>${f(x.p.rewardAmount)} RND</b><span>${x.p.rewardPaid ? 'PAID' : x.p.rewardRequested ? 'REQUESTED' : Date.now() / 1000 >= Number(x.p.unlockAt) ? 'ELIGIBLE TO REQUEST' : 'LOCKED'}</span>${x.p.rewardPaymentTxHash !== ethers.ZeroHash ? `<a target="_blank" rel="noopener" href="https://bscscan.com/tx/${x.p.rewardPaymentTxHash}">Payment TX</a>` : ''}</div>`).join('') : '<div class="empty">No locks for this wallet yet.</div>';
+  const el = mine.filter(x => !x.p.rewardRequested && !x.p.rewardPaid && !x.p.lpReleased && now >= Number(x.p.unlockAt)), sel = $('wdLock'), cur = sel.value;
+  eligible = el;
+  sel.innerHTML = el.length ? el.map(x => `<option value="${x.id}">Lock #${x.id} — ${f(x.p.rewardAmount)} RND</option>`).join('') : '<option value="">कोई eligible reward नहीं</option>';
+  if (el.some(x => String(x.id) === cur)) sel.value = cur;
+  wdFill();
 }
+let eligible = [];
+const wdFill = () => { const x = eligible.find(y => String(y.id) === $('wdLock').value); $('wdAmt').value = x ? ethers.formatUnits(x.p.rewardAmount, 18) : ''; };
+const toast = (s, err, hash) => {
+  const t = $('toast'); t.className = 'toast show' + (err ? ' error' : ''); t.textContent = s;
+  if (hash) { const a = document.createElement('a'); a.href = 'https://bscscan.com/tx/' + hash; a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'BscScan'; t.append(a); }
+  clearTimeout(toast.t); toast.t = setTimeout(() => t.className = 'toast', 8000);
+};
+async function wdSend() {
+  if (!window.ethereum) throw Error('पहले Wallet Connect करें।');
+  const id = $('wdLock').value, x = eligible.find(y => String(y.id) === id), addr = $('wdAddr').value.trim();
+  if (!x) throw Error('कोई eligible reward उपलब्ध नहीं है।');
+  if (!ethers.isAddress(addr)) throw Error('सही BSC address डालें (0x…)।');
+  const bp = new ethers.BrowserProvider(window.ethereum);
+  if ((await bp.getNetwork()).chainId !== 56n) throw Error('BNB Smart Chain पर switch करें।');
+  const s = await bp.getSigner();
+  if ((await s.getAddress()).toLowerCase() !== x.p.user.toLowerCase()) throw Error('यह lock आपके connected wallet का नहीं है।');
+  toast('Wallet में confirm करें…');
+  const tx = await new ethers.Contract(A.locker, ['function requestRewardWithdrawal(uint256)'], s).requestRewardWithdrawal(BigInt(id));
+  toast('Transaction भेजा गया…', false, tx.hash); await tx.wait();
+  const txt = `Reward withdrawal request | Lock #${id} | ${ethers.formatUnits(x.p.rewardAmount, 18)} RND | Pay to: ${addr} | Request TX: ${tx.hash}`;
+  $('wdInfo').textContent = 'Request दर्ज हो गई। Admin को यह details भेजें: ' + txt;
+  try { await navigator.clipboard.writeText(txt); } catch {}
+  toast('Request सफल। Details copy हो गईं।', false, tx.hash); load();
+}
+$('wdLock').onchange = wdFill;
+$('wdSelf').onclick = async () => { try { $('wdAddr').value = (await window.ethereum.request({ method: 'eth_accounts' }))[0] || ''; } catch {} };
+$('wdBtn').onclick = async e => {
+  const b = e.currentTarget; if (b.disabled) return; b.disabled = true; b.classList.add('busy');
+  try { await wdSend(); } catch (err) { toast(err?.code === 'ACTION_REJECTED' ? 'आपने transaction reject कर दिया।' : (err?.shortMessage || err?.message || 'विफल'), true); }
+  finally { b.disabled = false; b.classList.remove('busy'); }
+};
 async function load() {
   let user = null;
   try { const a = await window.ethereum?.request({ method: 'eth_accounts' }); user = a?.[0] || null; } catch {}
