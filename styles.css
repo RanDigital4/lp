@@ -68,3 +68,33 @@ footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;paddin
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
 .wd{margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
 .rows .btn{width:100%}
+
+
+/* Responsive safety patch */
+html, body { width: 100%; max-width: 100%; overflow-x: clip; }
+img, svg, video, canvas { max-width: 100%; }
+button, input, select { max-width: 100%; }
+button, .btn { touch-action: manipulation; }
+@media (max-width: 560px) {
+  .top { gap: 6px; padding-left: 12px; padding-right: 12px; }
+  .top .btn { padding: 9px 10px; font-size: 11px; }
+  .brand { min-width: 0; gap: 7px; }
+  .bt b { font-size: 10.5px; }
+  .logo { width: 32px; height: 32px; flex: 0 0 32px; }
+  .sec { padding-left: 12px; padding-right: 12px; }
+  .hero { padding-left: 14px; padding-right: 14px; }
+  .glass { padding: 14px; border-radius: 15px; }
+  .stat { min-width: 0; }
+  .stat b, .addr, dd { overflow-wrap: anywhere; word-break: break-word; }
+  .positions, .grid2, .cards { min-width: 0; }
+  .bnav { padding-left: 3px; padding-right: 3px; }
+  .bnav a { font-size: 8.5px; }
+  .bnav i { font-size: 17px; }
+  .modal { padding: 12px; }
+  .mbox { max-height: calc(100dvh - 24px); overflow-y: auto; }
+}
+@media (max-width: 360px) {
+  .bt small { font-size: 8px; }
+  .top .btn { padding: 8px; }
+  .bnav a { letter-spacing: 0; font-size: 8px; }
+}
