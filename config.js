@@ -1,0 +1,55 @@
+/* RND LP website configuration */
+window.RND_CONFIG = {
+  chainId: 56,
+  chainHex: '0x38',
+  chainName: 'BNB Smart Chain',
+  rpcUrls: ['https://bsc-dataseed.binance.org/','https://bsc.publicnode.com','https://bsc-dataseed-public.bnbchain.org'],
+  explorer: 'https://bscscan.com',
+  // Saare addresses lowercase me rakhe gaye hain taaki checksum mismatch se "invalid address" error na aaye.
+  locker: '0x86b344c59e9cdfdf11a2becc43cd12d6d3be6e1d',
+  rnd: '0xcf1fbf18be9202865bcf88e6349b9d207f75942d',
+  usdt: '0x55d398326f99059ff775485246999027b3197955',
+  lpPair: '0xd6f291a4dbefa0ff99b07d247aa73ff7c20e9991',
+  deploymentBlock: 0,
+  // Sirf website par dikhane ke liye (smart contract se nahi padha jata). Baad me contract me RND daalne par isse hata sakte hain.
+  displayRewardReserve: 2000,
+  lockerAbi: [
+    'function RND() view returns (address)',
+    'function USDT() view returns (address)',
+    'function LOCK_DURATION() view returns (uint256)',
+    'function MIN_REWARD_STEP_USDT() view returns (uint256)',
+    'function REWARD_PER_STEP() view returns (uint256)',
+    'function REFERRAL_BPS() view returns (uint256)',
+    'function nextPositionId() view returns (uint256)',
+    'function totalLPLocked() view returns (uint256)',
+    'function totalOutstandingRewards() view returns (uint256)',
+    'function totalRegisteredUsers() view returns (uint256)',
+    'function register(address referrer)',
+    'function getSpotPriceRNDInUSDT() view returns (uint256)',
+    'function previewReward(uint256 usdtAmount,uint256 rndAmount) view returns (uint256 rndValueUSDT,uint256 userReward,uint256 referralReward)',
+    'function addLiquidityAndLock(uint256 usdtDesired,uint256 rndDesired,uint256 usdtMin,uint256 rndMin,address referrer,uint256 deadline) returns (uint256 positionId)',
+    'function withdrawLP(uint256 positionId,uint256 minUSDT,uint256 minRND,uint256 deadline)',
+    'function claimRewards(uint256 positionId)',
+    'function rewardReserveBalance() view returns (uint256)',
+    'function getUserInfo(address user) view returns (tuple(bool registered,address referrer,uint64 registeredAt))',
+    'function getReferralCount(address referrer) view returns (uint256)',
+    'function getReferredUsers(address referrer) view returns (address[])',
+    'function getReferralRewardCount(address referrer) view returns (uint256)',
+    'function getReferralRewardRecord(address referrer,uint256 index) view returns (tuple(uint256 positionId,address referredUser,uint256 amount,uint64 unlockAt,bool claimed))',
+    'function getPosition(uint256 positionId) view returns (tuple(address user,address referrer,uint256 lpAmount,uint256 usdtAdded,uint256 rndAdded,uint256 rndValueInUSDT,uint256 rewardAmount,uint256 referralRewardAmount,uint64 lockedAt,uint64 unlockAt,uint256 referralRecordIndex,bool lpWithdrawn,bool rewardsClaimed))',
+    'function getUserPositionIds(address user) view returns (uint256[])',
+    'function getUserPositionCount(address user) view returns (uint256)',
+    'event UserRegistered(address indexed user,address indexed referrer,uint256 timestamp)',
+    'event LiquidityAddedAndLocked(uint256 indexed positionId,address indexed user,address indexed referrer,uint256 usdtUsed,uint256 rndUsed,uint256 lpAmount,uint256 userReward,uint256 referralReward,uint256 unlockAt)',
+    'event LPWithdrawn(uint256 indexed positionId,address indexed user,uint256 usdtReceived,uint256 rndReceived)',
+    'event RewardsClaimed(uint256 indexed positionId,address indexed user,address indexed referrer,uint256 userReward,uint256 referralReward)',
+    'event ReferralRewardAccrued(address indexed referrer,address indexed referredUser,uint256 indexed positionId,uint256 amount,uint256 unlockAt)'
+  ],
+  erc20Abi: [
+    'function allowance(address owner,address spender) view returns (uint256)',
+    'function approve(address spender,uint256 amount) returns (bool)',
+    'function balanceOf(address account) view returns (uint256)',
+    'function decimals() view returns (uint8)',
+    'function symbol() view returns (string)'
+  ]
+};
