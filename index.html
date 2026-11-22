@@ -1,170 +1,83 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#050a18">
-<title>RND Community LP Program</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="styles.css">
-<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
-<script>window.ethers||document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.4/ethers.umd.min.js"><\/script>')</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#050a17">
+  <meta name="description" content="RND Liquidity — non-custodial liquidity locking and direct referral rewards on BNB Smart Chain.">
+  <title>RND Liquidity | Ran Digital</title>
+  <link rel="icon" href="https://raw.githubusercontent.com/test63947174-cyber/rnd/main/Rnd%20logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="theme3d.css">
 </head>
 <body>
-<header class="top">
-  <a class="brand" href="#top"><span class="logo">R</span><span class="bt"><b>RND COMMUNITY LP</b><small>RAN DIGITAL</small></span></a>
-  <div class="right">
-    <span id="netPill" class="chip"><i class="dot"></i><span>BNB Smart Chain</span></span>
-    <button id="connect" class="btn gold">Connect Wallet</button>
-    <span class="avatar" aria-hidden="true">👤</span>
-  </div>
-</header>
+  <noscript><p class="noscript-msg">Is website ko chalane ke liye JavaScript ON karein.</p></noscript>
+  <div class="ambient"></div>
+  <div class="topline"><span class="pulse"></span> RND LIQUIDITY PROTOCOL <span class="top-sep">•</span> BNB SMART CHAIN</div>
+  <header class="header">
+    <a class="brand" href="#home"><img src="https://raw.githubusercontent.com/test63947174-cyber/rnd/main/Rnd%20logo.png" alt="RND logo"><span>RAN DIGITAL<small>LIQUIDITY PROTOCOL</small></span></a>
+    <button type="button" class="mobile-menu" id="menuToggle" aria-label="Toggle navigation" aria-controls="mainNav">☰</button>
+    <nav id="mainNav" aria-label="Main navigation"><a href="#home">Overview</a><a href="#liquidity">Add Liquidity</a><a href="#dashboard">My Positions</a><a href="#referrals">Referrals</a><a href="#rewards">Rewards</a><a href="#how">How It Works</a></nav>
+    <div class="wallet-area"><span id="networkBadge" class="network-badge">● Not connected</span><button type="button" class="btn btn-gold" id="connectBtn">Connect Wallet</button></div>
+  </header>
 
-<main id="top">
-<section class="hero">
-  <p class="eyebrow">PancakeSwap V2 · BNB Smart Chain Mainnet</p>
-  <h1>RND COMMUNITY <span class="gt">LP PROGRAM</span></h1>
-  <p class="lead">Provide Liquidity. Support RND. Earn RND Rewards.</p>
-  <div class="cta"><button id="heroConnect" class="btn gold">CONNECT WALLET</button><a class="btn line" href="#add">ADD LIQUIDITY</a></div>
-  <div class="feats">
-    <div class="glass"><span class="fi">🤝</span><b>COMMUNITY POWERED</b><p>Built by holders, for holders.</p></div>
-    <div class="glass"><span class="fi">🛡️</span><b>SECURE SMART CONTRACT</b><p>Verified locker on BscScan.</p></div>
-    <div class="glass"><span class="fi">⏳</span><b>LONG-TERM LIQUIDITY</b><p>180-day locked LP.</p></div>
-    <div class="glass"><span class="fi">🏆</span><b>RND REWARD PROGRAM</b><p>20 RND per $100 of LP.</p></div>
-  </div>
-</section>
+  <main>
+    <section class="hero wrap" id="home">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="eyebrow-line"></span> BUILT ON BNB SMART CHAIN</div>
+        <h1>Provide Liquidity.<br><em>Lock with Purpose.</em></h1>
+        <p class="hero-lead">Add liquidity to the RND ecosystem through a non-custodial interface. Your LP position is recorded on-chain and locked for 180 days under the deployed smart contract.</p>
+        <div class="hero-actions"><a class="btn btn-gold" href="#liquidity">Add Liquidity <span>↗</span></a><a class="btn btn-outline" href="#how">Explore the Protocol</a></div>
+        <div class="hero-tags"><span>BNB Chain · Chain ID 56</span><span>180-Day LP Lock</span><span>On-chain Direct Referrals</span></div>
+      </div>
+      <div class="hero-visual"><div class="orb orb-one"></div><div class="orb orb-two"></div><div class="hero-logo-ring"><img src="https://raw.githubusercontent.com/test63947174-cyber/rnd/main/Rnd%20logo.png" alt="RND"></div><div class="visual-caption"><b>RND / USDT</b><small>LIQUIDITY PAIR</small></div></div>
+    </section>
 
-<section id="dashboard" class="sec">
-  <h2>WELCOME BACK</h2>
-  <p class="sub">Wallet: <b id="walletAddr" class="addr">Not connected</b> <button id="copyAddr" class="icon hidden" type="button" title="Copy">⧉</button></p>
-  <div class="cards">
-    <div class="stat c-gold"><span>💎 TOTAL LP LOCKED</span><b id="total">—</b></div>
-    <div class="stat c-blue"><span>🔒 MY LP LOCKED</span><b id="myLp" data-n>—</b></div>
-    <div class="stat c-cyan"><span>💵 MY LP VALUE (USD)</span><b id="myVal">—</b></div>
-    <div class="stat c-gold"><span>🎁 MY RND REWARDS</span><b id="myRew">—</b></div>
-    <div class="stat c-purple"><span>📦 LOCKED LP POSITIONS</span><b id="myCount">—</b></div>
-    <div class="stat c-purple"><span>⏱ DAYS REMAINING</span><b id="myDays">—</b></div>
-  </div>
-</section>
+    <section class="wrap stats-grid" aria-label="Protocol statistics">
+      <article class="stat-card"><span>Total LP Locked</span><strong id="totalLp">—</strong><small>LP tokens held by locker</small></article>
+      <article class="stat-card"><span>Outstanding Rewards</span><strong id="outstanding">—</strong><small>RND recorded by contract</small></article>
+      <article class="stat-card"><span>Registered Wallets</span><strong id="registered">—</strong><small>On-chain registrations</small></article>
+      <article class="stat-card"><span>Reward Reserve</span><strong id="reserve">2,000 RND</strong><small>RND available for rewards</small></article>
+    </section>
 
-<section id="global" class="sec">
-  <h2>GLOBAL LP STATISTICS</h2>
-  <div class="cards">
-    <div class="stat c-gold"><span>Total LP locked (RND/USDT)</span><b id="gLp">—</b></div>
-    <div class="stat c-blue"><span>Total LP locks</span><b id="gLocks">—</b></div>
-    <div class="stat c-cyan"><span>Participating wallets</span><b id="gWallets">—</b></div>
-    <div class="stat c-gold"><span>RND rewards paid</span><b id="gPaid">—</b></div>
-    <div class="stat c-purple"><span>Total eligible LP value</span><b id="gVal">—</b></div>
-    <div class="stat"><span>Next Lock ID</span><b id="next">—</b></div>
-    <div class="stat"><span>Oracle observations</span><b id="obs">— / 24</b></div>
-    <div class="stat"><span>Contract owner</span><b id="owner">—</b></div>
-  </div>
-  <div class="glass chartbox"><h3>Cumulative LP value locked (USD)</h3><div id="chart1" class="chart"></div></div>
-</section>
+    <section class="section wrap" id="liquidity">
+      <div class="section-heading"><div><div class="eyebrow">01 / LIQUIDITY</div><h2>Add liquidity <em>& lock</em></h2><p>Supply both assets. The contract adds liquidity through PancakeSwap V2 and records the LP position in one transaction.</p></div><span class="lock-pill">⌁ 180 DAYS</span></div>
+      <div class="two-col">
+        <div class="panel form-panel">
+          <div class="panel-top"><div><b>Deposit assets</b><small>BNB Smart Chain · RND / USDT</small></div><span class="step-tag">ADD & LOCK</span></div>
+          <label class="field-label" for="usdtAmount">USDT amount <span class="wallet-balance" id="usdtBalance">Wallet balance: Connect wallet</span></label>
+          <div class="amount-box"><input id="usdtAmount" type="text" inputmode="decimal" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="0.00"><span class="token-chip"><b class="token-icon usdt">₮</b> USDT</span></div>
+          <label class="field-label" for="rndAmount">RND amount <span class="wallet-balance" id="rndBalance">Wallet balance: Connect wallet</span></label>
+          <div class="amount-box"><input id="rndAmount" type="text" inputmode="decimal" autocomplete="off" placeholder="Live price se auto calculate hoga" readonly><span class="token-chip"><b class="token-icon rnd">R</b> RND</span></div>
+          <p class="fineprint quote-note" id="quoteNote">Enter USDT amount. RND will be calculated automatically using the live on-chain RND/USDT price.</p>
+          <div class="action-stack"><button type="button" class="btn btn-gold full" id="addLiquidityBtn">Add Liquidity & Lock</button></div>
+          <div class="tx-status" id="liquidityStatus" role="status" aria-live="polite">Connect your wallet to begin.</div>
+        </div>
+        <aside class="panel detail-panel"><div class="panel-top"><div><b>Position overview</b><small>Before you confirm</small></div><span class="shield">◇</span></div><div class="detail-row"><span>Network</span><b>BNB Smart Chain</b></div><div class="detail-row"><span>Liquidity route</span><b>PancakeSwap V2</b></div><div class="detail-row"><span>LP recipient</span><b>RND Locker Contract</b></div><div class="detail-row"><span>Lock duration</span><b>180 days</b></div><div class="detail-row"><span>Early withdrawal</span><b class="warning-text">Not available</b></div><div class="callout"><b>Important</b><p>On first use, your wallet must separately approve USDT and RND for the locker contract. These approval confirmations are required by BEP-20 and cannot be removed by a website button. After approval, Add Liquidity & Lock submits the LP transaction. Rewards can be claimed after 180 days.</p></div><a class="text-link" href="https://bscscan.com/address/0x86b344c59e9cdfdf11a2becc43cd12d6d3be6e1d" target="_blank" rel="noopener">View locker contract on BscScan ↗</a></aside>
+      </div>
+    </section>
 
-<section id="add" class="sec">
-  <h2>ADD LIQUIDITY</h2>
-  <div class="grid2">
-    <div class="glass">
-      <div class="pairrow"><b>RND / USDT</b><span class="tag">PancakeSwap V2</span><span class="tag">BNB Smart Chain</span></div>
-      <div class="field"><label for="usdtAmount">USDT amount <small>Balance: <b id="balU">—</b></small></label><div class="inp"><input id="usdtAmount" inputmode="decimal" autocomplete="off" placeholder="0.0"><button id="maxUsdt" class="max" type="button">Max</button></div></div>
-      <div class="field"><label for="rndAmount">RND amount (auto) <small>Balance: <b id="balR">—</b></small></label><div class="inp"><input id="rndAmount" readonly placeholder="0.0"></div></div>
-      <div class="field"><label for="slippage">Slippage</label><select id="slippage"><option value="50">0.5%</option><option value="100" selected>1%</option><option value="200">2%</option></select></div>
-      <p id="quoteStatus" class="hint">Enter USDT amount.</p>
-      <button id="addLiquidity" class="btn gold full">ADD LIQUIDITY</button>
-      <p class="hint">USDT/RND approvals और liquidity transaction के लिए अलग-अलग wallet confirmations होंगे।</p>
-    </div>
-    <div class="glass info">
-      <h3>Pool</h3>
-      <dl><div><dt>Live price</dt><dd id="poolPrice">—</dd></div>
-      <div><dt>Pair</dt><dd><a target="_blank" rel="noopener" href="https://bscscan.com/address/0xd6f291a4dbefa0ff99b07d247aa73ff7c20e9991">0xd6f2…e9991</a></dd></div>
-      <div><dt>Locker</dt><dd><a target="_blank" rel="noopener" href="https://bscscan.com/address/0xE930dca16D6ce36D3666AC48DD51db5AAd713590#code">0xE930…3590</a></dd></div></dl>
-      <a class="btn line full" target="_blank" rel="noopener" href="https://pancakeswap.finance/v2/add/0x55d398326f99059fF775485246999027B3197955/0xcF1FbF18bE9202865bcf88E6349B9D207F75942d?chain=bsc&persistChain=1">Add on PancakeSwap</a>
-    </div>
-  </div>
-</section>
+    <section class="section wrap" id="dashboard"><div class="section-heading"><div><div class="eyebrow">02 / YOUR ACCOUNT</div><h2>My <em>positions</em></h2><p>Review your active locks, maturity dates and available on-chain actions.</p></div><button type="button" class="btn btn-outline" id="refreshBtn">↻ Refresh data</button></div><div class="position-summary"><div class="mini-stat"><span>Your LP positions</span><b id="positionCount">—</b></div><div class="mini-stat"><span>Pending user rewards</span><b id="myPending">—</b></div><div class="mini-stat"><span>Referral relationship</span><b id="myReferrer">—</b></div></div><div id="positionsList" class="empty-state">Connect your wallet to load your positions from the blockchain.</div></section>
 
-<section id="lock" class="sec">
-  <h2>LOCK LP</h2>
-  <div class="grid2">
-    <div class="glass">
-      <div class="field"><label for="lpAmount">LP token amount <small>Balance: <b id="balLP">—</b></small></label><div class="inp"><input id="lpAmount" inputmode="decimal" autocomplete="off" placeholder="0.0"><button id="maxLp" class="max" type="button">Max</button></div></div>
-      <button id="preview" class="btn soft full">Preview value &amp; reward</button>
-      <div id="previewResult" class="result">Enter LP amount and preview estimated value and reward.</div>
-      <p class="hint">Lock duration: <b>180 DAYS</b></p>
-      <div class="two"><button id="approveLP" class="btn soft">Approve LP</button><button id="lockLP" class="btn gold">LOCK LP</button></div>
-    </div>
-    <div class="glass info">
-      <h3>TWAP Price Oracle</h3>
-      <dl><div><dt>Observations</dt><dd id="oracleCount">— / 24</dd></div></dl>
-      <button id="updateOracle" class="btn soft full">Update observation</button>
-      <p class="hint">TWAP needs observations 30 min – 2 h old. Each update is an on-chain transaction (gas).</p>
-    </div>
-  </div>
-</section>
+    <section class="section wrap" id="referrals"><div class="section-heading"><div><div class="eyebrow">03 / COMMUNITY</div><h2>Direct <em>referrals</em></h2><p>Your referral relationship and reward records are read directly from the RND locker contract.</p></div></div><div class="referral-card panel"><div class="referral-intro"><div class="ref-icon">↗</div><div><b>Your referral link</b><small>Share your wallet referral link with new RND liquidity providers.</small></div></div><div class="copy-row"><input id="referralLink" readonly value="Connect wallet to generate your link" aria-label="Your referral link"><button type="button" class="btn btn-gold" id="copyReferralBtn">Copy link</button></div><div class="referral-stats"><div><span>Direct referrals</span><b id="directCount">—</b></div><div><span>Referral reward records</span><b id="refRecordCount">—</b></div><div><span>Pending referral rewards</span><b id="refPending">—</b></div><div><span>Claimed referral rewards</span><b id="refClaimed">—</b></div></div></div><div class="two-col referral-lists"><div class="panel list-panel"><div class="panel-top"><div><b>Referred wallets</b><small>Direct referrals registered on-chain</small></div></div><div id="referredList" class="empty-state compact">Connect wallet to view your direct referrals.</div></div><div class="panel list-panel"><div class="panel-top"><div><b>Referral reward ledger</b><small>Position-wise reward records</small></div></div><div id="referralLedger" class="empty-state compact">No referral records loaded.</div></div></div></section>
 
-<section id="rewards" class="sec">
-  <h2>RND REWARDS</h2>
-  <div class="glass">
-    <div class="cards two-up">
-      <div class="stat c-cyan"><span>Eligible LP value</span><b id="rwVal">—</b></div>
-      <div class="stat c-gold"><span>Estimated RND reward</span><b id="rwEst">—</b></div>
-    </div>
-    <div id="rwList" class="rows"><div class="empty">Connect wallet to see reward status.</div></div>
-    <div class="wd"><h3>Reward Withdrawal</h3>
-    <div class="field"><label for="wdLock">Lock चुनें</label><select id="wdLock"><option value="">कोई eligible reward नहीं</option></select></div>
-    <div class="field"><label for="wdAmt">Reward amount (RND) <small>contract के अनुसार fixed</small></label><div class="inp"><input id="wdAmt" readonly placeholder="0.0"></div></div>
-    <div class="field"><label for="wdAddr">Payout address (BSC)</label><div class="inp"><input id="wdAddr" autocomplete="off" placeholder="0x…"><button id="wdSelf" class="max" type="button">My wallet</button></div></div>
-    <button id="wdBtn" class="btn gold full" type="button">REWARD WITHDRAW REQUEST</button>
-    <p id="wdInfo" class="hint">Lock पूरा होने के बाद request on-chain दर्ज होती है; RND का भुगतान admin पैनल से होगा।</p></div>
-  <ul class="rules"><li>Every eligible <b>$100</b> of LP value earns <b>20 RND</b> after the 180-day lock.</li><li>छोटी या बड़ी LP मात्रा lock की जा सकती है; reward eligibility और reward amount smart contract के नियमों पर निर्भर हैं।</li><li>Rewards are paid by the owner after you request them; the payment hash is recorded on-chain.</li></ul>
-  </div>
-</section>
+    <section class="section wrap" id="rewards"><div class="section-heading"><div><div class="eyebrow">04 / REWARDS</div><h2>Rewards & <em>reserve</em></h2><p>Rewards are calculated by the deployed contract and become claimable after the associated 180-day lock matures.</p></div></div><div class="two-col"><div class="panel reward-panel"><div class="reward-big"><span>YOUR PENDING REWARD</span><b id="rewardPendingBig">— <small>RND</small></b><p>Across your recorded positions</p></div><div class="detail-row"><span>Claimed rewards</span><b id="claimedTotal">—</b></div><div class="detail-row"><span>Reward reserve</span><b id="reserveDetail">2,000 RND</b></div><div class="callout"><b>Reserve funding</b><p>Reward funding is done by sending RND directly to the locker contract. A position claim requires enough RND in the contract for that position's user and referrer payout.</p></div></div><div class="panel reward-rules"><div class="panel-top"><div><b>Reward calculation</b><small>Current contract parameters</small></div></div><div class="rule-line"><b>20 RND</b><span>Per full $50 matched liquidity step</span></div><div class="rule-line"><b>15%</b><span>Additional direct-referral reward, where a referrer is recorded</span></div><div class="rule-line"><b>180 days</b><span>Reward maturity follows the LP position unlock date</span></div><p class="fineprint">Only full matched $50 steps count. Examples: $50 USDT + $50 RND = 20 RND · $100 USDT + $100 RND = 40 RND · $75 matched value = one 20 RND step (not pro-rated). Your reward appears on this page as soon as the transaction confirms.</p></div></div></section>
 
-<section id="positions-wrap" class="sec">
-  <div class="sech"><h2 id="positions-h">MY LP POSITIONS</h2><button id="refresh" class="btn line sm">Refresh</button></div>
-  <p class="sub">180 दिन पूरे होने पर उसी wallet से हर lock के कार्ड में <b>“LP वापस लें”</b> बटन दबाकर अपना LP निकालें।</p>
-  <div id="positions" class="positions"><div class="empty">Connect wallet to see your locks.</div></div>
-</section>
+    <section class="section wrap" id="history"><div class="section-heading"><div><div class="eyebrow">05 / ACTIVITY</div><h2>Transaction <em>history</em></h2><p>Recent events emitted by the locker contract. Results are fetched from BNB Chain logs.</p></div><button type="button" class="btn btn-outline" id="historyBtn">Load recent activity</button></div><div id="historyList" class="panel history-list empty-state">Connect your wallet and load recent activity.</div></section>
 
-<section id="activity" class="sec">
-  <div class="sech"><h2>RECENT LP ACTIVITY</h2><button id="viewAll" class="btn line sm">VIEW ALL LP ACTIVITY</button></div>
-  <p class="sub">यहाँ PancakeSwap V2 से सफलतापूर्वक जोड़ी गई Liquidity और Smart Contract में किए गए LP Locks अलग-अलग दिखेंगे। हर Add Liquidity रिकॉर्ड का लिंक सीधे उसी BscScan transaction पर खुलेगा।</p>
-  <div id="actList" class="positions"><div class="empty">Wallet connect करें — LP activity blockchain से verify होगी।</div></div>
-</section>
+    <section class="section wrap" id="how"><div class="section-heading centered"><div><div class="eyebrow">THE PROCESS</div><h2>How RND <em>liquidity works</em></h2><p>A transparent on-chain flow, from token approval to maturity.</p></div></div><div class="steps-grid"><article class="step-card"><span>01</span><h3>Connect wallet</h3><p>Choose MetaMask, Trust Wallet, TokenPocket or SafePal and select BNB Smart Chain. On mobile, the site opens inside your wallet app.</p></article><article class="step-card"><span>02</span><h3>Approve assets</h3><p>Approve USDT and RND so the locker can use the amounts you specify.</p></article><article class="step-card"><span>03</span><h3>Add & lock</h3><p>The contract adds liquidity through PancakeSwap V2 and records your 180-day LP position.</p></article><article class="step-card"><span>04</span><h3>Claim & withdraw</h3><p>After maturity, claim eligible rewards and withdraw your LP position through separate contract actions.</p></article></div></section>
 
-<section id="community" class="sec">
-  <h2>RND COMMUNITY</h2>
-  <div class="cards">
-    <div class="stat c-cyan"><span>Participating wallets</span><b id="cWallets">—</b></div>
-    <div class="stat c-gold"><span>LP locked by community</span><b id="cLp">—</b></div>
-    <div class="stat c-purple"><span>Last 30 days growth</span><b id="cGrow">—</b></div>
-  </div>
-  <div class="glass chartbox"><h3>New wallets joined (cumulative)</h3><div id="chart2" class="chart"></div></div>
-  <div class="glass"><h3>Recent LP participants</h3><div id="cRecent" class="rows"></div></div>
-</section>
+    <section class="section wrap" id="faq"><div class="section-heading centered"><div><div class="eyebrow">HELP CENTER</div><h2>Frequently asked <em>questions</em></h2></div></div><div class="faq-list"><details><summary>Can I withdraw my LP before 180 days?</summary><p>No. The deployed locker contract requires the position to reach its unlock timestamp before LP withdrawal.</p></details><details><summary>Are LP trading fees paid as a separate claim?</summary><p>The locker does not expose a separate LP-fee harvesting function. Trading fees accrue in the PancakeSwap V2 pair reserves and can affect the value of the underlying LP position. The actual withdrawal amount depends on pool conditions.</p></details><details><summary>Can I lock less than $50?</summary><p>Yes. Any positive USDT and RND amounts accepted by PancakeSwap can create a 180-day locked LP position. The $50 threshold applies only to reward calculation; below one full matched $50 step, the user reward is zero.</p></details><details><summary>How are RND rewards calculated?</summary><p>The contract reads the current PancakeSwap V2 reserve-ratio spot price, compares the actual paired USDT and RND value, and awards 20 RND for each full $50 matched step.</p></details><details><summary>How does the referral work?</summary><p>Open the website through a friend's referral link (it looks like <i>…/?ref=0x…</i>) and add liquidity. The referrer is recorded on your first registration and is permanent: a wallet first registered without a referrer cannot attach one later. To receive referral rewards yourself, connect your wallet, press "Activate referral link" if shown, and share your link.</p></details><details><summary>When can rewards be claimed?</summary><p>Rewards mature at the same unlock timestamp as the associated LP position. Claims also require enough RND in the locker reserve for that position's payout.</p></details><details><summary>I opened the link from WhatsApp but the wallet does not connect</summary><p>Tap Connect Wallet and choose your wallet app (MetaMask, Trust Wallet, TokenPocket or SafePal). The site reopens inside that wallet and connects automatically. If it does not open, choose "Copy website link" and paste the link into your wallet's DApp / Browser tab.</p></details><details><summary>Does the website hold my funds?</summary><p>No. Transactions are signed by your wallet and executed by the smart contract. Never share your seed phrase or private key with anyone.</p></details></div></section>
+  </main>
+  <footer class="footer"><div class="wrap footer-inner"><a class="brand" href="#home"><img src="https://raw.githubusercontent.com/test63947174-cyber/rnd/main/Rnd%20logo.png" alt="RND logo"><span>RAN DIGITAL<small>LIQUIDITY PROTOCOL</small></span></a><div><b>RND Liquidity</b><p>Non-custodial interface on BNB Smart Chain.</p><a href="https://bscscan.com/address/0x86b344c59e9cdfdf11a2becc43cd12d6d3be6e1d" target="_blank" rel="noopener">Contract on BscScan ↗</a></div><small>© <span id="year"></span> Ran Digital. Interact only with verified contract addresses.</small></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<section id="admin" class="sec admin hidden">
-  <h2>OWNER: REWARD PAYMENT</h2>
-  <p class="sub">Send RND to the user first, then record that transfer hash here. This only records the payment.</p>
-  <div class="glass"><div class="grid2"><div class="field"><label for="adminId">Lock ID</label><div class="inp"><input id="adminId" inputmode="numeric" placeholder="1"></div></div><div class="field"><label for="paymentHash">Payment transaction hash</label><div class="inp"><input id="paymentHash" placeholder="0x + 64 hex"></div></div></div><button id="markPaid" class="btn gold">Record Reward Paid</button>
-  <h3 style="margin-top:20px">All LP locks</h3><div id="admList" class="rows"></div></div>
-</section>
-<button id="share" class="btn line sm sharebtn" type="button">Share</button>
-</main>
-
-<footer><span>© Ran Digital</span><a target="_blank" rel="noopener" href="https://bscscan.com/address/0xE930dca16D6ce36D3666AC48DD51db5AAd713590#code">Contract on BscScan</a></footer>
-
-<nav class="bnav" aria-label="Main">
-  <a href="#top" data-s="top"><i>🏠</i>HOME</a><a href="#add" data-s="add"><i>➕</i>ADD LP</a><a href="#dashboard" data-s="dashboard"><i>📊</i>DASHBOARD</a><a href="#positions-wrap" data-s="positions-wrap"><i>🔒</i>MY LOCKS</a><a href="#activity" data-s="activity"><i>⚡</i>ACTIVITY</a>
-</nav>
-
-<div id="modal" class="modal hidden" role="dialog" aria-modal="true"><div class="glass mbox"><h3>Confirm LP Lock</h3><p>You are locking <b id="mAmt">0</b> LP tokens for <b>180 days</b>.</p><p class="hint">LP cannot be withdrawn until the lock expires. Your wallet will ask for a final confirmation.</p><div class="two"><button id="mNo" class="btn line">Cancel</button><button id="mYes" class="btn gold">Confirm &amp; Lock</button></div></div></div>
-<div id="toast" class="toast" role="status" aria-live="polite"></div>
-<script src="wallet.js"></script>
-<script src="ui.js"></script>
-<script src="app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+  <script>window.ethers||document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.4/ethers.umd.min.js"><\/script>')</script>
+  <script src="config.js"></script>
+  <script src="wallet.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
