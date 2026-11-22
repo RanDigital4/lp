@@ -1,0 +1,113 @@
+/* RND theme3d.css — Load AFTER styles.css. Visual-only enhancements; no wallet or contract logic. */
+:root{
+  --depth:0 1px 0 rgba(255,255,255,.07) inset,0 -1px 0 rgba(0,0,0,.35) inset,0 18px 40px rgba(0,0,0,.35),0 2px 6px rgba(0,0,0,.4);
+}
+body{min-height:100vh;min-height:100dvh;padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);-webkit-tap-highlight-color:transparent}
+.ambient{
+  background:
+    radial-gradient(800px 500px at 78% -10%,rgba(32,112,220,.28),transparent 65%),
+    radial-gradient(700px 500px at -15% 42%,rgba(28,188,219,.14),transparent 65%),
+    radial-gradient(900px 600px at 50% 110%,rgba(205,159,49,.12),transparent 65%),
+    linear-gradient(rgba(124,166,226,.035) 1px,transparent 1px) 0 0/46px 46px,
+    linear-gradient(90deg,rgba(124,166,226,.035) 1px,transparent 1px) 0 0/46px 46px;
+}
+.header{box-shadow:0 10px 30px rgba(0,0,0,.35);padding-top:env(safe-area-inset-top)}
+.brand img{box-shadow:0 0 22px rgba(47,173,230,.35),0 6px 14px rgba(0,0,0,.5)}
+
+/* ---------- Card depth (no overlay pseudo-elements, so text stays crisp) ---------- */
+.stat-card,.panel,.step-card,.mini-stat,.position-card,.referral-stats div,.faq-list details{
+  box-shadow:var(--depth);border-color:rgba(140,180,240,.24);
+  transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s,border-color .3s;
+}
+@media(hover:hover) and (pointer:fine){
+  .stats-grid,.steps-grid{perspective:1400px}
+  .stat-card:hover,.step-card:hover{
+    transform:translateY(-6px) rotateX(4deg) rotateY(-3deg);
+    border-color:rgba(216,179,78,.6);
+    box-shadow:0 1px 0 rgba(255,255,255,.1) inset,0 30px 56px rgba(0,0,0,.5),0 0 34px rgba(38,148,255,.18);
+  }
+  .panel:hover,.position-card:hover,.mini-stat:hover,.referral-stats div:hover,.faq-list details:hover{
+    transform:translateY(-3px);border-color:rgba(216,179,78,.45);
+  }
+  .form-panel:hover{transform:none} /* form ko hilne nahi dena */
+}
+.stat-card strong,.reward-big b{text-shadow:0 0 24px rgba(54,212,239,.3)}
+h1{text-shadow:0 10px 40px rgba(0,0,0,.45)}
+h1 em,h2 em{filter:drop-shadow(0 0 16px rgba(54,212,239,.28))}
+
+/* ---------- Buttons ---------- */
+.btn{box-shadow:0 5px 0 rgba(0,0,0,.35),0 12px 24px rgba(0,0,0,.28);touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.btn-gold{box-shadow:0 5px 0 #7a5a14,0 14px 30px rgba(216,179,78,.28),0 1px 0 rgba(255,255,255,.5) inset}
+.btn-outline{box-shadow:0 5px 0 rgba(5,12,28,.9),0 12px 24px rgba(0,0,0,.3),0 1px 0 rgba(255,255,255,.08) inset}
+.btn:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 #7a5a14,0 4px 10px rgba(0,0,0,.3)}
+.btn:disabled{box-shadow:0 3px 0 rgba(0,0,0,.3)}
+.mobile-menu{box-shadow:none}
+.btn:focus-visible,summary:focus-visible,input:focus-visible,a:focus-visible,.mobile-menu:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.wallet-area .btn{max-width:180px;display:inline-block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.5}
+
+/* ---------- Form details ---------- */
+.amount-box{box-shadow:inset 0 3px 8px rgba(0,0,0,.45),0 1px 0 rgba(255,255,255,.05)}
+.amount-box:focus-within{box-shadow:inset 0 3px 8px rgba(0,0,0,.45),0 0 0 3px rgba(54,212,239,.18)}
+.token-icon{box-shadow:0 3px 8px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.35)}
+.status-pill,.lock-pill,.step-tag{box-shadow:0 3px 10px rgba(0,0,0,.3)}
+.amount-box input{-moz-appearance:textfield}
+.amount-box input::-webkit-outer-spin-button,.amount-box input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+
+/* ---------- Elements created by app.js (reward preview, banner, referral box, LP breakdown) ---------- */
+#rewardPreview{font-size:16px!important;border-radius:14px!important;box-shadow:0 6px 20px rgba(0,0,0,.3)}
+#rewardBanner{font-size:15px!important;border-radius:14px!important;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+#registerBox{font-size:13px!important;color:var(--muted);font-weight:700}
+#registerBox .btn{min-height:40px;padding:9px 16px;font-size:13px}
+#lpBreakdown{font-size:13px!important;font-weight:700;color:var(--muted)}
+
+/* ---------- Wallet picker + "please wait" overlay: bigger, bolder text ---------- */
+#rnd-wallet-dialog{font-weight:700}
+#rnd-wallet-dialog h3{font-size:22px!important;font-weight:800}
+#rnd-wallet-dialog p{font-size:14px!important;color:#c0cee6!important}
+.rnd-wallet-option{font-size:16px!important;min-height:62px}
+.rnd-wallet-option small{font-size:12px!important;color:#b0c2df!important;font-weight:600!important}
+#rnd-wallet-help{font-size:12.5px!important;color:#a9bcd9!important;font-weight:600}
+#rnd-wallet-close{min-width:44px;min-height:44px}
+
+/* ---------- Hero 3D (gentle, professional) ---------- */
+.hero-visual{perspective:900px}
+.hero-logo-ring{
+  transform-style:preserve-3d;animation:rndFloat 6s ease-in-out infinite;will-change:transform;
+  box-shadow:0 0 0 18px rgba(24,72,122,.1),0 0 0 42px rgba(24,72,122,.05),0 40px 80px rgba(0,0,0,.55),0 0 100px rgba(42,178,226,.28),inset 0 2px 0 rgba(255,255,255,.12);
+}
+.hero-logo-ring::before{animation:rndSpin 14s linear infinite}
+.hero-logo-ring::after{animation:rndSpinRev 20s linear infinite}
+.hero-logo-ring img{animation:rndCoin 8s ease-in-out infinite;transform-style:preserve-3d;will-change:transform}
+.orb-one{animation:rndOrb 5s ease-in-out infinite}
+.orb-two{animation:rndOrb 7s ease-in-out infinite reverse}
+@keyframes rndFloat{0%,100%{transform:translateY(0) rotateX(6deg) rotateY(-8deg)}50%{transform:translateY(-14px) rotateX(-4deg) rotateY(8deg)}}
+@keyframes rndSpin{to{transform:rotateX(68deg) rotateZ(378deg)}}
+@keyframes rndSpinRev{to{transform:rotateX(68deg) rotateZ(-382deg)}}
+@keyframes rndCoin{0%,100%{transform:rotateY(-16deg) translateZ(30px)}50%{transform:rotateY(16deg) translateZ(30px)}}
+@keyframes rndOrb{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(14px,-22px,0)}}
+
+/* ---------- Mobile refinements ---------- */
+@media(max-width:1020px){
+  .header nav{z-index:40;max-height:70dvh}
+}
+@media(max-width:900px){
+  .hero-visual{perspective:700px}
+  .hero-logo-ring{animation:rndMobileFloat 5s ease-in-out infinite}
+  .hero-logo-ring::before{animation-duration:10s}
+  .hero-logo-ring::after{animation-duration:15s}
+  .stat-card:hover,.step-card:hover,.panel:hover{transform:none}
+}
+@keyframes rndMobileFloat{0%,100%{transform:translateY(0) rotateX(5deg) rotateY(-5deg) scale(.98)}50%{transform:translateY(-9px) rotateX(-5deg) rotateY(5deg) scale(1.02)}}
+@media(max-width:600px){
+  .wallet-area .btn{max-width:132px}
+  .position-actions .btn{flex:1 1 100%}
+  .section-heading .btn{width:100%}
+  .btn{padding:13px 18px}
+  .toast{bottom:calc(16px + env(safe-area-inset-bottom))}
+}
+@media(max-width:360px){.brand span{max-width:96px}}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
